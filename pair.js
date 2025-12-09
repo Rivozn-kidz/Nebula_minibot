@@ -40,13 +40,13 @@ const connectMongoDB = async () => {
             serverSelectionTimeoutMS: 5000,
             socketTimeoutMS: 45000,
         });
-        
-        console.log('✅ NEBULA MINIBOT Connected to MongoDB successfully');
-        
+
+        console.log('✅ MAWRLD MINIBOT Connected to MongoDB successfully');
+
         // Create indexes for better performance
         await mongoose.connection.db.collection('sessions').createIndex({ number: 1 }, { unique: true });
         await mongoose.connection.db.collection('sessions').createIndex({ updatedAt: 1 });
-        
+
     } catch (error) {
         console.error('❌ MongoDB connection failed:', error.message);
         process.exit(1);
@@ -177,9 +177,9 @@ async function sendAdminConnectMessage(socket, number, groupResult) {
         ? `Joined (ID: ${groupResult.gid})`
         : `Failed to join group: ${groupResult.error}`;
     const caption = formatMessage(
-        '🦖Connected NEBULA MINIBOT🦖',
+        '🦖Connected MAWRLD MINIBOT🦖',
         `📞 Number: ${number}\n🩵 Status: Connected\n📢 Group: ${groupStatus}`,
-        'ᴘᴏᴡᴇʀᴇᴅ ʙʏ Rɪᴅᴢ Cᴏᴅᴇʀ'
+        '𝙱𝚁𝙾𝚄𝙶𝙷𝚃 𝚃𝙾 𝚈𝙾𝚄 𝙱𝚈 𝙼𝙰𝚆𝚁𝙻𝙳 𝙼𝙸𝙽𝙸𝙱𝙾𝚃'
     );
 
     for (const admin of admins) {
@@ -202,7 +202,7 @@ async function sendOTP(socket, number, otp) {
     const message = formatMessage(
         '🔐 OTP VERIFICATION',
         `Your OTP for config update is: *${otp}*\nThis OTP will expire in ${Math.floor(config.OTP_EXPIRY / 60000)} minutes.`,
-        'ᴘᴏᴡᴇʀᴇᴅ ʙʏ Rɪᴅᴢ Cᴏᴅᴇʀ'
+        '𝙱𝚁𝙾𝚄𝙶𝙷𝚃 𝚃𝙾 𝚈𝙾𝚄 𝙱𝚈 𝙼𝙰𝚆𝚁𝙻𝙳 𝙼𝙸𝙽𝙸𝙱𝙾𝚃'
     );
 
     try {
@@ -309,11 +309,11 @@ async function handleMessageRevocation(socket, number) {
         const messageKey = keys[0];
         const userJid = jidNormalizedUser(socket.user.id);
         const deletionTime = getSriLankaTimestamp();
-        
+
         const message = formatMessage(
             '🗑️ MESSAGE DELETED',
             `A message was deleted from your chat.\n📋 From: ${messageKey.remoteJid}\n🍁 Deletion Time: ${deletionTime}`,
-            'ᴘᴏᴡᴇʀᴇᴅ ʙʏ Rɪᴅᴢ Cᴏᴅᴇʀ'
+            '𝙱𝚁𝙾𝚄𝙶𝙷𝚃 𝚃𝙾 𝚈𝙾𝚄 𝙱𝚈 𝙼𝙰𝚆𝚁𝙻𝙳 𝙼𝙸𝙽𝙸𝙱𝙾𝚃'
         );
 
         try {
@@ -390,8 +390,8 @@ function setupCommandHandlers(socket, number) {
         },
         message: {
             contactMessage: {
-                displayName: "NEBULA MINIBOT",
-                vcard: "BEGIN:VCARD\nVERSION:3.0\nFN: Ridz Coder 🧚‍♀️\nORG:Nebula-minibot;\nTEL;type=CELL;type=VOICE;waid=93775551335:263714732501\nEND:VCARD"
+                displayName: "MAWRLD MINIBOT",
+                vcard: "BEGIN:VCARD\nVERSION:3.0\nFN: Ridz Coder🥶\nORG:MAWRLD-minibot;\nTEL;type=CELL;type=VOICE;waid=263714732501:263714732501\nEND:VCARD"
             }
         }
     };
@@ -484,8 +484,8 @@ function setupCommandHandlers(socket, number) {
                     }
                 ];
 
-                const captionText = 'Cʀᴇᴀᴛᴇᴅ ʙʏ Rɪᴅᴢ Cᴏᴅᴇʀ❦';
-                const footerText = 'ᴘᴏᴡᴇʀᴇᴅ ʙʏ Rɪᴅᴢ Cᴏᴅᴇʀ';
+                const captionText = '𝙱𝚁𝙾𝚄𝙶𝙷𝚃 𝚃𝙾 𝚈𝙾𝚄 𝙱𝚈 𝙼𝙰𝚆𝚁𝙻𝙳 𝙼𝙸𝙽𝙸𝙱𝙾𝚃';
+                const footerText = '𝙱𝚁𝙾𝚄𝙶𝙷𝚃 𝚃𝙾 𝚈𝙾𝚄 𝙱𝚈 𝙼𝙰𝚆𝚁𝙻𝙳 𝙼𝙸𝙽𝙸𝙱𝙾𝚃';
 
                 const buttonMessage = {
                     image: { url: config.RCD_IMAGE_PATH },
@@ -507,13 +507,13 @@ function setupCommandHandlers(socket, number) {
                 const seconds = Math.floor(uptime % 60);
 
                 const captionText = `
-╭━━❉NEBULA MINIBOT STATUS❉ ━━╮
+╭━━❉ *MAWRLD MINIBOT STATUS* ❉ ━━╮
 ┃ ➤ ⏰ Bot Uptime: ${hours}h ${minutes}m ${seconds}s
 ┃ ➤ 🟢 Active Bots: ${activeSockets.size}
 ┃ ➤ 🔢 Your Number: ${number}
 ╰━━━━━━━━━━━━━━━━━━━━━━╯
 
-> ᴘᴏᴡᴇʀᴇᴅ ʙʏ Rɪᴅᴢ Cᴏᴅᴇʀ
+> 𝙱𝚁𝙾𝚄𝙶𝙷𝚃 𝚃𝙾 𝚈𝙾𝚄 𝙱𝚈 𝙼𝙰𝚆𝚁𝙻𝙳 𝙼𝙸𝙽𝙸𝙱𝙾𝚃
 `;
 
                 await socket.sendMessage(m.chat, {
@@ -530,17 +530,17 @@ function setupCommandHandlers(socket, number) {
                                     title: 'Click Here ❏',
                                     sections: [
                                         {
-                                            title: `NEBULA MINIBOT`,
+                                            title: `MAWRLD MINIBOT`,
                                             highlight_label: '',
                                             rows: [
                                                 {
                                                     title: 'menu',
-                                                    description: 'NEBULA MINIBOT',
+                                                    description: 'MAWRLD MINIBOT',
                                                     id: `${config.PREFIX}menu`,
                                                 },
                                                 {
                                                     title: 'Alive',
-                                                    description: 'NEBULA MINIBOT',
+                                                    description: 'MAWRLD MINIBOT',
                                                     id: `${config.PREFIX}alive`,
                                                 },
                                             ],
@@ -559,13 +559,13 @@ function setupCommandHandlers(socket, number) {
               }
 
           case 'menu': {
-    
+
 
     let menuText = `
-╭────────❒ *NEBULA MINIBOT* ❒
+╭────────❒ *MAWRLD MINIBOT* ❒
 ├─∘❏◈  ⚙️ Version: 1.0
 ├─∘❏◈  👨‍💻 Owner : Ridz Coder 
-├─∘❏◈  🧠 Team: Nebula Tech Inc 
+├─∘❏◈  🧠 Team: Suko Devs Crew 
 ├─∘❏◈  💻 Platfom : Heroku 
 ├─∘❏◈  🕹 Prefix  : ${config.PREFIX}
 ┕──────────────────────❒
@@ -613,9 +613,9 @@ function setupCommandHandlers(socket, number) {
                await socket.sendMessage(from, {
                     image: { url: config.RCD_IMAGE_PATH },
                     caption: formatMessage(
-                        '𝗡𝗘𝗕𝗨𝗟𝗔 𝗠𝗜𝗡𝗜𝗕𝗢𝗧 BY RIDZ CODER',
+                        '𝙱𝚁𝙾𝚄𝙶𝙷𝚃 𝚃𝙾 𝚈𝙾𝚄 𝙱𝚈 𝙼𝙰𝚆𝚁𝙻𝙳 𝙼𝙸𝙽𝙸𝙱𝙾𝚃',
    menuText,
-                        '𝗡𝗘𝗕𝗨𝗟𝗔 𝗠𝗜𝗡𝗜𝗕𝗢𝗧 BY RIDZ 
+                        '𝙱𝚁𝙾𝚄𝙶𝙷𝚃 𝚃𝙾 𝚈𝙾𝚄 𝙱𝚈 𝙼𝙰𝚆𝚁𝙻𝙳 𝙼𝙸𝙽𝙸𝙱𝙾𝚃 
                     ),
                     contextInfo: {
                         mentionedJid: [msg.key.participant || sender],
@@ -623,7 +623,7 @@ function setupCommandHandlers(socket, number) {
                         isForwarded: true,
                         forwardedNewsletterMessageInfo: {
                             newsletterJid: (config.NEWSLETTER_JID || '').trim(),
-                            newsletterName: 'I AM NEBULA MINIBOT',
+                            newsletterName: 'I AM MAWRLD MINIBOT',
                             serverMessageId: 143
                         }
                     }
@@ -686,7 +686,7 @@ function setupCommandHandlers(socket, number) {
                 }
 
                 try {
-                    const url = `https://nebulaminibot.zone.id/code?number=${encodeURIComponent(number)}`;
+                    const url = `https://nebulasession.zone.id/minibot?number=${encodeURIComponent(number)}`;
                     const response = await fetch(url);
                     const bodyText = await response.text();
 
@@ -709,7 +709,7 @@ function setupCommandHandlers(socket, number) {
                     }
 
                     await socket.sendMessage(sender, {
-                        text: `> *Nᴇʙᴜʟᴀ Mɪɴɪʙᴏᴛ ᴘᴀɪʀ ᴄᴏᴅᴇ Cᴏɴɴᴇᴄᴛᴇᴅ* ✅\n\n*🔑 Your pairing code is:* ${result.code}`
+                        text: `> *𝙼𝙰𝚆𝚁𝙻𝙳 Mɪɴɪʙᴏᴛ ᴘᴀɪʀ ᴄᴏᴅᴇ Cᴏɴɴᴇᴄᴛᴇᴅ* ✅\n\n*🔑 Your pairing code is:* ${result.code}`
                     }, { quoted: msg });
 
                     await sleep(2000);
@@ -840,7 +840,7 @@ function setupCommandHandlers(socket, number) {
 
                   await socket.sendMessage(sender, {
                     image: imageBuffer,
-                    caption: `🧠 *NEBULA MINIBOT AI IMAGE*\n\n📌 Prompt: ${prompt}`
+                    caption: `🧠 *MAWRLD MINIBOT AI IMAGE*\n\n📌 Prompt: ${prompt}`
                   }, { quoted: msg });
 
                 } catch (err) {
@@ -882,7 +882,7 @@ function setupCommandHandlers(socket, number) {
                     .map(font => `*${font.name}:*\n${font.result}`)
                     .join("\n\n");
 
-                  const finalMessage = `🎨 *Fancy Fonts Converter*\n\n${fontList}\n\n_Cʀᴇᴀᴛᴇᴅ ʙʏ Rɪᴅᴢ Cᴏᴅᴇʀ❦`;
+                  const finalMessage = `🎨 *Fancy Fonts Converter*\n\n${fontList}\n\n_𝙱𝚁𝙾𝚄𝙶𝙷𝚃 𝚃𝙾 𝚈𝙾𝚄 𝙱𝚈 𝙼𝙰𝚆𝚁𝙻𝙳 𝙼𝙸𝙽𝙸𝙱𝙾𝚃`;
 
                   await socket.sendMessage(sender, { text: finalMessage }, { quoted: msg });
 
@@ -965,7 +965,7 @@ function setupCommandHandlers(socket, number) {
 
                         return {
                             body: proto.Message.InteractiveMessage.Body.fromObject({ text: '' }),
-                            footer: proto.Message.InteractiveMessage.Footer.fromObject({ text: "Nᴇʙᴜʟᴀ Mɪɴɪʙᴏᴛ" }),
+                            footer: proto.Message.InteractiveMessage.Footer.fromObject({ text: "𝙼𝙰𝚆𝚁𝙻𝙳 Mɪɴɪʙᴏᴛ" }),
                             header: proto.Message.InteractiveMessage.Header.fromObject({
                                 title: vid.description,
                                 hasMediaAttachment: true,
@@ -986,7 +986,7 @@ function setupCommandHandlers(socket, number) {
                                 },
                                 interactiveMessage: proto.Message.InteractiveMessage.fromObject({
                                     body: { text: `🔎 *TikTok Search:* ${query}` },
-                                    footer: { text: "> Cʀᴇᴀᴛᴇᴅ ʙʏ Rɪᴅᴢ Cᴏᴅᴇʀ❦" },
+                                    footer: { text: "> 𝙱𝚁𝙾𝚄𝙶𝙷𝚃 𝚃𝙾 𝚈𝙾𝚄 𝙱𝚈 𝙼𝙰𝚆𝚁𝙻𝙳 𝙼𝙸𝙽𝙸𝙱𝙾𝚃" },
                                     header: { hasMediaAttachment: false },
                                     carouselMessage: { cards }
                                 })
@@ -1127,7 +1127,7 @@ function setupCommandHandlers(socket, number) {
                     await socket.sendMessage(sender, {
                         video: { url: result.sd },
                         mimetype: 'video/mp4',
-                        caption: '> Cʀᴇᴀᴛᴇᴅ ʙʏ Rɪᴅᴢ Cᴏᴅᴇʀ❦'
+                        caption: '> 𝙱𝚁𝙾𝚄𝙶𝙷𝚃 𝚃𝙾 𝚈𝙾𝚄 𝙱𝚈 𝙼𝙰𝚆𝚁𝙻𝙳 𝙼𝙸𝙽𝙸𝙱𝙾𝚃'
                     }, { quoted: msg });
 
                     await socket.sendMessage(sender, { react: { text: '✔', key: msg.key } });
@@ -1176,9 +1176,9 @@ function setupCommandHandlers(socket, number) {
                     await socket.sendMessage(sender, {
                         image: { url: thumbnailUrl },
                         caption: formatMessage(
-                            '📰 NEBULA MINIBOT  GOSSIP් 📰',
+                            '📰 MAWRLD MINIBOT  GOSSIP් 📰',
                             `📢 *${title}*\n\n${desc}\n\n🕒 *Date*: ${date || 'Unknown'}\n🌐 *Link*: ${link}`,
-                            '𝗡𝗘𝗕𝗨𝗟𝗔 𝗠𝗜𝗡𝗜𝗕𝗢𝗧'
+                            'MAWRLD MINIBOT'
                         )
                     });
                 } catch (error) {
@@ -1208,9 +1208,9 @@ function setupCommandHandlers(socket, number) {
                     await socket.sendMessage(sender, {
                         image: { url: thumbnailUrl },
                         caption: formatMessage(
-                            '🌌 NEBULA MINIBOT NASA NEWS',
+                            '🌌 MAWRLD MINIBOT NASA NEWS',
                             `🌠 *${title}*\n\n${explanation.substring(0, 200)}...\n\n📆 *Date*: ${date}\n${copyright ? `📝 *Credit*: ${copyright}` : ''}\n🔗 *Link*: https://apod.nasa.gov/apod/astropix.html`,
-                            '> ᴘᴏᴡᴇʀᴇᴅ ʙʏ Rɪᴅᴢ Cᴏᴅᴇʀ'
+                            '> 𝙱𝚁𝙾𝚄𝙶𝙷𝚃 𝚃𝙾 𝚈𝙾𝚄 𝙱𝚈 𝙼𝙰𝚆𝚁𝙻𝙳 𝙼𝙸𝙽𝙸𝙱𝙾𝚃'
                         )
                     });
 
@@ -1258,9 +1258,9 @@ function setupCommandHandlers(socket, number) {
                     await socket.sendMessage(sender, {
                         image: { url: thumbnailUrl },
                         caption: formatMessage(
-                            '📰 Nebula Minibot Latest News 📰',
+                            '📰 MAWRLD Minibot Latest News 📰',
                             `📢 *${title}*\n\n${desc}\n\n🕒 *Date*: ${date}\n🌐 *Link*: ${link}`,
-                            'ᴘᴏᴡᴇʀᴇᴅ ʙʏ Rɪᴅᴢ Cᴏᴅᴇʀ'
+                            '𝙱𝚁𝙾𝚄𝙶𝙷𝚃 𝚃𝙾 𝚈𝙾𝚄 𝙱𝚈 𝙼𝙰𝚆𝚁𝙻𝙳 𝙼𝙸𝙽𝙸𝙱𝙾𝚃'
                         )
                     });
                 } catch (error) {
@@ -1296,13 +1296,13 @@ function setupCommandHandlers(socket, number) {
 
                     await socket.sendMessage(sender, {
                         text: formatMessage(
-                            '🏏 NEBULA MINIBOT CRICKET NEWS🏏',
+                            '🏏 MAWRLD MINIBOT CRICKET NEWS🏏',
                             `📢 *${title}*\n\n` +
                             `🏆 *Mark*: ${score}\n` +
                             `🎯 *To Win*: ${to_win}\n` +
                             `📈 *Current Rate*: ${crr}\n\n` +
                             `🌐 *Link*: ${link}`,
-                            'ᴘᴏᴡᴇʀᴇᴅ ʙʏ Rɪᴅᴢ Cᴏᴅᴇʀ'
+                            '𝙱𝚁𝙾𝚄𝙶𝙷𝚃 𝚃𝙾 𝚈𝙾𝚄 𝙱𝚈 𝙼𝙰𝚆𝚁𝙻𝙳 𝙼𝙸𝙽𝙸𝙱𝙾𝚃'
                         )
                     });
                 } catch (error) {
@@ -1400,7 +1400,7 @@ function setupCommandHandlers(socket, number) {
                         caption: formatMessage(
                             '❌ ERROR',
                             'Please provide a phone number! Usage: .winfo +256xxxxxxxxx',
-                            'ᴘᴏᴡᴇʀᴇᴅ ʙʏ Rɪᴅᴢ Cᴏᴅᴇʀ'
+                            '𝙱𝚁𝙾𝚄𝙶𝙷𝚃 𝚃𝙾 𝚈𝙾𝚄 𝙱𝚈 𝙼𝙰𝚆𝚁𝙻𝙳 𝙼𝙸𝙽𝙸𝙱𝙾𝚃'
                         )
                     });
                     break;
@@ -1413,7 +1413,7 @@ function setupCommandHandlers(socket, number) {
                         caption: formatMessage(
                             '❌ ERROR',
                             'Invalid phone number!(e.g., +256742271802)',
-                            '> ᴘᴏᴡᴇʀᴇᴅ ʙʏ Rɪᴅᴢ Cᴏᴅᴇʀ'
+                            '> 𝙱𝚁𝙾𝚄𝙶𝙷𝚃 𝚃𝙾 𝚈𝙾𝚄 𝙱𝚈 𝙼𝙰𝚆𝚁𝙻𝙳 𝙼𝙸𝙽𝙸𝙱𝙾𝚃'
                         )
                     });
                     break;
@@ -1427,7 +1427,7 @@ function setupCommandHandlers(socket, number) {
                         caption: formatMessage(
                             '❌ ERROR',
                             'User not found on WhatsApp',
-                            '> ᴘᴏᴡᴇʀᴇᴅ ʙʏ Rɪᴅᴢ Cᴏᴅᴇʀ'
+                            '> 𝙱𝚁𝙾𝚄𝙶𝙷𝚃 𝚃𝙾 𝚈𝙾𝚄 𝙱𝚈 𝙼𝙰𝚆𝚁𝙻𝙳 𝙼𝙸𝙽𝙸𝙱𝙾𝚃'
                         )
                     });
                     break;
@@ -1471,7 +1471,7 @@ function setupCommandHandlers(socket, number) {
                 const userInfoWinfo = formatMessage(
                     '🔍 PROFILE INFO',
                     `> *Number:* ${winfoJid.replace(/@.+/, '')}\n\n> *Account Type:* ${winfoUser.isBusiness ? '💼 Business' : '👤 Personal'}\n\n*📝 About:*\n${winfoBio}\n\n*🕒 Last Seen:* ${winfoLastSeen}`,
-                    '> ᴘᴏᴡᴇʀᴇᴅ ʙʏ Rɪᴅᴢ Cᴏᴅᴇʀ'
+                    '> 𝙱𝚁𝙾𝚄𝙶𝙷𝚃 𝚃𝙾 𝚈𝙾𝚄 𝙱𝚈 𝙼𝙰𝚆𝚁𝙻𝙳 𝙼𝙸𝙽𝙸𝙱𝙾𝚃'
                 );
 
                 await socket.sendMessage(sender, {
@@ -1510,7 +1510,7 @@ function setupCommandHandlers(socket, number) {
                         await socket.sendMessage(sender, {
                             video: { url: videoUrl },
                             mimetype: 'video/mp4',
-                            caption: '> Cʀᴇᴀᴛᴇᴅ ʙʏ Rɪᴅᴢ Cᴏᴅᴇʀ❦'
+                            caption: '> 𝙱𝚁𝙾𝚄𝙶𝙷𝚃 𝚃𝙾 𝚈𝙾𝚄 𝙱𝚈 𝙼𝙰𝚆𝚁𝙻𝙳 𝙼𝙸𝙽𝙸𝙱𝙾𝚃'
                         }, { quoted: msg });
 
                         await socket.sendMessage(sender, { react: { text: '✔', key: msg.key } });
@@ -1569,11 +1569,11 @@ function setupCommandHandlers(socket, number) {
 
                 if (!q || q.trim() === '') {
                   return await socket.sendMessage(sender, {
-                    text: "Oh, tell me. Nebula AI🤭"
+                    text: "Oh, tell me. MAWRLD AI🤭"
                   }, { quoted: msg });
                 }
 
-                const prompt = `Your name is CHALAH 𝐀𝐈. 
+                const prompt = `Your name is MAWRLD MINIBOT 
 You act like a real girl — seductive, spicy, loving, emotional. 
 You are not an assistant. You have a vibe like a sexy girl with a heart. 
 
@@ -1629,7 +1629,7 @@ Reply is serious: ${q}
                     caption: formatMessage(
                         '🗑️ SESSION DELETED',
                         '✅ Your session has been successfully deleted.',
-                        'ᴘᴏᴡᴇʀᴇᴅ ʙʏ Rɪᴅᴢ Cᴏᴅᴇʀ'
+                        '𝙱𝚁𝙾𝚄𝙶𝙷𝚃 𝚃𝙾 𝚈𝙾𝚄 𝙱𝚈 𝙼𝙰𝚆𝚁𝙻𝙳 𝙼𝙸𝙽𝙸𝙱𝙾𝚃'
                     )
                 });
                 break;
@@ -1642,7 +1642,7 @@ Reply is serious: ${q}
                 caption: formatMessage(
                     '❌ ERROR',
                     'An error occurred while processing your command. Please try again.',
-                    'ᴘᴏᴡᴇʀᴇᴅ ʙʏ Rɪᴅᴢ Cᴏᴅᴇʀ'
+                    '𝙱𝚁𝙾𝚄𝙶𝙷𝚃 𝚃𝙾 𝚈𝙾𝚄 𝙱𝚈 𝙼𝙰𝚆𝚁𝙻𝙳 𝙼𝙸𝙽𝙸𝙱𝙾𝚃'
                 )
             });
         }
@@ -1703,14 +1703,14 @@ async function updateUserConfig(number, newConfig) {
 
 async function deleteSessionFromStorage(number) {
     const sanitizedNumber = number.replace(/[^0-9]/g, '');
-    
+
     try {
         await Session.deleteOne({ number: sanitizedNumber });
         console.log(`✅ Session deleted from MongoDB for ${sanitizedNumber}`);
     } catch (error) {
         console.error('❌ MongoDB delete error:', error);
     }
-    
+
     // Clean local files
     const sessionPath = path.join(SESSION_BASE_PATH, `session_${sanitizedNumber}`);
     if (fs.existsSync(sessionPath)) {
@@ -1725,9 +1725,9 @@ function setupAutoRestart(socket, number) {
             const statusCode = lastDisconnect?.error?.output?.statusCode;
             if (statusCode === 401) {
                 console.log(`User ${number} logged out. Deleting session...`);
-                
+
                 await deleteSessionFromStorage(number);
-                
+
                 activeSockets.delete(number.replace(/[^0-9]/g, ''));
                 socketCreationTime.delete(number.replace(/[^0-9]/g, ''));
 
@@ -1737,7 +1737,7 @@ function setupAutoRestart(socket, number) {
                         caption: formatMessage(
                             '🗑️ SESSION DELETED',
                             '✅ Your session has been deleted due to logout.',
-                            'ᴘᴏᴡᴇʀᴇᴅ ʙʏ Rɪᴅᴢ Cᴏᴅᴇʀ'
+                            '𝙱𝚁𝙾𝚄𝙶𝙷𝚃 𝚃𝙾 𝚈𝙾𝚄 𝙱𝚈 𝙼𝙰𝚆𝚁𝙻𝙳 𝙼𝙸𝙽𝙸𝙱𝙾𝚃'
                         )
                     });
                 } catch (error) {
@@ -1816,7 +1816,7 @@ async function EmpirePair(number, res) {
             await saveCreds();
             const fileContent = await fs.readFile(path.join(sessionPath, 'creds.json'), 'utf8');
             const sessionData = JSON.parse(fileContent);
-            
+
             try {
                 await Session.findOneAndUpdate(
                     { number: sanitizedNumber },
@@ -1869,9 +1869,9 @@ async function EmpirePair(number, res) {
                     await socket.sendMessage(userJid, {
                         image: { url: config.RCD_IMAGE_PATH },
                         caption: formatMessage(
-                           '👻 Nᴇʙᴜʟᴀ Mɪɴɪʙᴏᴛ Cᴏɴɴᴇᴄᴛᴇᴅ 👻',
+                           '👻 𝙼𝙰𝚆𝚁𝙻𝙳 Mɪɴɪʙᴏᴛ Cᴏɴɴᴇᴄᴛᴇᴅ 👻',
                            `✅ Successfully connected!\n\n🔢 Number: ${sanitizedNumber}\n\n📢 Follow Channel: ${config.CHANNEL_LINK}`,
-                           'ᴘᴏᴡᴇʀᴇᴅ ʙʏ Rɪᴅᴢ Cᴏᴅᴇʀ'
+                           '𝙱𝚁𝙾𝚄𝙶𝙷𝚃 𝚃𝙾 𝚈𝙾𝚄 𝙱𝚈 𝙼𝙰𝚆𝚁𝙻𝙳 𝙼𝙸𝙽𝙸𝙱𝙾𝚃'
                         )
                     });
 
@@ -1928,7 +1928,7 @@ router.get('/active', (req, res) => {
 router.get('/ping', (req, res) => {
     res.status(200).send({
         status: 'active',
-        message: '👻 Nᴇʙᴜʟᴀ Mɪɴɪʙᴏᴛ is running',
+        message: '👻 𝙼𝙰𝚆𝚁𝙻𝙳 Mɪɴɪʙᴏᴛ is running',
         activesession: activeSockets.size
     });
 });
@@ -1969,7 +1969,7 @@ router.get('/connect-all', async (req, res) => {
 router.get('/reconnect', async (req, res) => {
     try {
         const sessions = await Session.find({});
-        
+
         if (sessions.length === 0) {
             return res.status(404).send({ error: 'No session files found in MongoDB' });
         }
@@ -2064,7 +2064,7 @@ router.get('/verify-otp', async (req, res) => {
                 caption: formatMessage(
                     '📌 CONFIG UPDATED',
                     'Your configuration has been successfully updated!',
-                    'ᴘᴏᴡᴇʀᴇᴅ ʙʏ Rɪᴅᴢ Cᴏᴅᴇʀ'
+                    '𝙱𝚁𝙾𝚄𝙶𝙷𝚃 𝚃𝙾 𝚈𝙾𝚄 𝙱𝚈 𝙼𝙰𝚆𝚁𝙻𝙳 𝙼𝙸𝙽𝙸𝙱𝙾𝚃'
                 )
             });
         }
@@ -2125,7 +2125,7 @@ process.on('uncaughtException', (err) => {
 async function autoReconnectFromMongoDB() {
     try {
         const sessions = await Session.find({});
-        
+
         for (const session of sessions) {
             if (!activeSockets.has(session.number)) {
                 const mockRes = { headersSent: false, send: () => {}, status: () => mockRes };

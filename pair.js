@@ -499,139 +499,126 @@ function setupCommandHandlers(socket, number) {
                 break;
               }
 
-              case 'alive': {
-                const startTime = socketCreationTime.get(number) || Date.now();
-                const uptime = Math.floor((Date.now() - startTime) / 1000);
-                const hours = Math.floor(uptime / 3600);
-                const minutes = Math.floor((uptime % 3600) / 60);
-                const seconds = Math.floor(uptime % 60);
+                   case 'alive': {
+                    const startTime = socketCreationTime.get(number) || Date.now();
+                    const uptime = Math.floor((Date.now() - startTime) / 1000);
+                    const hours = Math.floor(uptime / 3600);
+                    const minutes = Math.floor((uptime % 3600) / 60);
+                    const seconds = Math.floor(uptime % 60);
 
-                const captionText = `
-╭━━❉ *MAWRLD MINIBOT STATUS* ❉ ━━╮
-┃ ➤ ⏰ Bot Uptime: ${hours}h ${minutes}m ${seconds}s
-┃ ➤ 🟢 Active Bots: ${activeSockets.size}
-┃ ➤ 🔢 Your Number: ${number}
-╰━━━━━━━━━━━━━━━━━━━━━━╯
+                    const title = '𝐌𝐀𝐑𝐖𝐋𝐃 𝐌𝐈𝐍𝐈 𝐁𝐎𝐓 𝐀𝐋𝐈𝐕𝐄 𝐍𝐎𝐖 😾❤*';
+                    const content = `*𝐌𝐚𝐫𝐰𝐥𝐝-𝐌𝐢𝐧𝐢 𝐛𝐨𝐭 𝐛𝐲 Rɪᴅᴢ Cᴏᴅᴇʀ*\n` +
+                                `*ʙᴏᴛ ᴏᴡɴᴇʀ :- Rɪᴅᴢ Cᴏᴅᴇʀ*\n` +
+                                `*ʙᴏᴛ ɴᴀᴍᴇ :- 𝐌𝐚𝐫𝐰𝐥𝐝-𝐌𝐢𝐧𝐢-𝐁𝐨𝐭*\n` +
+                                `*ʙᴏᴛ ᴡᴇʙ ꜱɪᴛᴇ*\n` +
+                                `> *mawrldminibot.zone.id*`;
+                    const footer = config.BOT_FOOTER;
 
-> 𝙱𝚁𝙾𝚄𝙶𝙷𝚃 𝚃𝙾 𝚈𝙾𝚄 𝙱𝚈 𝙼𝙰𝚆𝚁𝙻𝙳 𝙼𝙸𝙽𝙸𝙱𝙾𝚃
-`;
+                    await socket.sendMessage(sender, {
+                        image: { url: config.BUTTON_IMAGES.ALIVE },
+                        caption: formatMessage(title, content, footer),
+                        buttons: [
+                            { buttonId: `${config.PREFIX}menu`, buttonText: { displayText: 'MENU' }, type: 1 },
+                            { buttonId: `${config.PREFIX}ping`, buttonText: { displayText: 'PING' }, type: 1 }
+                        ],
+                        quoted: msg
+                    });
+                    break;
+                }
+ case 'menu': {
+    const startTime = socketCreationTime.get(number) || Date.now();
+    const uptime = Math.floor((Date.now() - startTime) / 1000);
+    const hours = Math.floor(uptime / 3600);
+    const minutes = Math.floor((uptime % 3600) / 60);
+    const seconds = Math.floor(uptime % 60);
 
-                await socket.sendMessage(m.chat, {
-                    buttons: [
-                        {
-                            buttonId: 'action',
-                            buttonText: {
-                                displayText: '📂 Menu Options'
-                            },
-                            type: 4,
-                            nativeFlowInfo: {
-                                name: 'single_select',
-                                paramsJson: JSON.stringify({
-                                    title: 'Click Here ❏',
-                                    sections: [
-                                        {
-                                            title: `MAWRLD MINIBOT`,
-                                            highlight_label: '',
-                                            rows: [
-                                                {
-                                                    title: 'menu',
-                                                    description: 'MAWRLD MINIBOT',
-                                                    id: `${config.PREFIX}menu`,
-                                                },
-                                                {
-                                                    title: 'Alive',
-                                                    description: 'MAWRLD MINIBOT',
-                                                    id: `${config.PREFIX}alive`,
-                                                },
-                                            ],
-                                        },
-                                    ],
-                                }),
-                            },
-                        },
-                    ],
-                    headerType: 1,
-                    viewOnce: true,
-                    image: { url: config.RCD_IMAGE_PATH },
-                    caption: `𝙽𝚎𝚋𝚞𝚕𝚊 𝙼𝚒𝚗𝚒𝚋𝚘𝚝 𝚒𝚜 𝚊𝚕𝚒𝚟𝚎 𝚊𝚗𝚍 𝚔𝚒𝚌𝚔𝚒𝚗𝚐\n\n${captionText}`,
-                }, { quoted: msg });
-                break;
-              }
+    await socket.sendMessage(sender, { 
+        react: { 
+            text: "👍",
+            key: msg.key 
+        } 
+    });
 
-          case 'menu': {
+    const title = '𝐌𝐀𝐑𝐖𝐋𝐃 𝐌𝐈𝐍𝐈 𝐁𝐎𝐓 𝐌𝐄𝐍𝐔 😾❤';
+    const text = 
+`╭──➢
+│ \`S T A T U S\`
+│ *⦁ ʙᴏᴛ ɴᴀᴍᴇ*: 𝐌𝐚𝐫𝐰𝐥𝐝-𝐌𝐢𝐧𝐢-𝐁𝐨𝐭
+│ *⦁ ʙᴏᴛ ᴏᴡɴᴇʀ*: Rɪᴅᴢ Cᴏᴅᴇʀ
+│ *⦁ ᴠᴇʀꜱɪᴏɴ*: 0.0001+
+│ *⦁ ᴘʟᴀᴛꜰᴏʀᴍ*: Heroku
+│ *⦁ ᴜᴘᴛɪᴍᴇ*: ${hours}h ${minutes}m ${seconds}s
+╰──➢`;
 
+    const sections = [
 
-    let menuText = `
-╭────────❒ *MAWRLD MINIBOT* ❒
-├─∘❏◈  ⚙️ Version: 1.0
-├─∘❏◈  👨‍💻 Owner : Ridz Coder 
-├─∘❏◈  🧠 Team: Suko Devs Crew 
-├─∘❏◈  💻 Platfom : Heroku 
-├─∘❏◈  🕹 Prefix  : ${config.PREFIX}
-┕──────────────────────❒
+        // MAIN COMMANDS
+        {
+            title: "🫩 ᴍᴀɪɴ ᴄᴏᴍᴍᴀɴᴅꜱ 🫩",
+            rows: [
+                { title: "📱 Bσƚ Sƚαƭυʂ 📱", description: "Show bot information", rowId: `${config.PREFIX}alive` },
+                { title: "📱 Sყʂƚҽɱ Iɳϝσ 📱", description: "Show system details", rowId: `${config.PREFIX}system` },
+                { title: "📱 Pιɳɠ 📱", description: "Check bot latency", rowId: `${config.PREFIX}ping` },
+                { title: "📱 ai 📱", description: "Use AI chat", rowId: `${config.PREFIX}ai` },
+                { title: "📱 fancy 📱", description: "Fancy text generator", rowId: `${config.PREFIX}fancy` },
+                { title: "📱 logo 📱", description: "Logo maker", rowId: `${config.PREFIX}logo` },
+                { title: "📱 pair 📱", description: "Pair code", rowId: `${config.PREFIX}pair` },
+                { title: "📱 vv 📱", description: "Vv command", rowId: `${config.PREFIX}vv` },
+                { title: "📱 dllogo 📱", description: "Download logo", rowId: `${config.PREFIX}dllogo` },
+                { title: "📱 active 📱", description: "Check active time", rowId: `${config.PREFIX}active` },
+                { title: "📱 getabout 📱", description: "Get WhatsApp about", rowId: `${config.PREFIX}getabout` }
+            ]
+        },
 
-╭────❒ 💠 GENERAL ❒*
-├─∘❏◈ ${config.PREFIX}alive  
-├─∘❏◈ ${config.PREFIX}ai  
-├─∘❏◈ ${config.PREFIX}fancy  
-├─∘❏◈ ${config.PREFIX}logo  
-├─∘❏◈ ${config.PREFIX}pair  
-├─∘❏◈ ${config.PREFIX}vv  
-├─∘❏◈ ${config.PREFIX}dllogo  
-├─∘❏◈ ${config.PREFIX}active  
-├─∘❏◈ ${config.PREFIX}getabout  
-┕──────────────────────❒
+        // MEDIA DOWNLOAD
+        {
+            title: "🫩 ᴍᴇᴅɪᴀ ᴅᴏᴡɴʟᴏᴀᴅ 🫩",
+            rows: [
+                { title: "🎧 Dσɯɳʅσԃ Sσɳɠ 🎧", description: "Download audio", rowId: `${config.PREFIX}play` },
+                { title: "📹 Dσɯɳʅσԃ Vιԃҽσ 📹", description: "Download video", rowId: `${config.PREFIX}video` },
+                { title: "📱 aiimag 📱", description: "AI image generator", rowId: `${config.PREFIX}aiimag` },
+                { title: "📱 tiktok 📱", description: "TikTok downloader", rowId: `${config.PREFIX}tiktok` },
+                { title: "📱 fb 📱", description: "Facebook downloader", rowId: `${config.PREFIX}fb` },
+                { title: "📱 ig 📱", description: "Instagram downloader", rowId: `${config.PREFIX}ig` },
+                { title: "📱 ts 📱", description: "Twitter downloader", rowId: `${config.PREFIX}ts` }
+            ]
+        },
 
-╭────❒ 🎵 MEDIA TOOLS ❒
-├─∘❏◈ ${config.PREFIX}play  
-├─∘❏◈ ${config.PREFIX}aiimg  
-├─∘❏◈ ${config.PREFIX}tiktok  
-├─∘❏◈ ${config.PREFIX}fb  
-├─∘❏◈ ${config.PREFIX}ig  
-├─∘❏◈ ${config.PREFIX}ts  
-┕──────────────────────❒
+        // NEWS COMMANDS
+        {
+            title: "🫩 news command 🫩",
+            rows: [
+                { title: "👨‍💻 news 👨‍💻", description: "Latest news", rowId: `${config.PREFIX}news` },
+                { title: "👨‍💻 nasa 👨‍💻", description: "NASA updates", rowId: `${config.PREFIX}nasa` },
+                { title: "👨‍💻 gossip 👨‍💻", description: "Celebrity gossip", rowId: `${config.PREFIX}gossip` },
+                { title: "👨‍💻 cricket 👨‍💻", description: "Cricket updates", rowId: `${config.PREFIX}cricket` }
+            ]
+        },
 
-╭────❒ 📰 NEWS & INFO ❒
-├─∘❏◈ ${config.PREFIX}news  
-├─∘❏◈ ${config.PREFIX}nasa  
-├─∘❏◈ ${config.PREFIX}gossip  
-├─∘❏◈ ${config.PREFIX}cricket  
-┕──────────────────────❒
+        // OTHER COMMANDS
+        {
+            title: "🫩 ᴏᴛʜᴇʀ ᴄᴏᴍᴍᴀɴᴅ 🫩",
+            rows: [
+                { title: "👨‍💻 winfo 👨‍💻", description: "WhatsApp info", rowId: `${config.PREFIX}winfo` },
+                { title: "👨‍💻 bomb 👨‍💻", description: "SMS bomber", rowId: `${config.PREFIX}bomb` },
+                { title: "👨‍💻 fc 👨‍💻", description: "Fancy text", rowId: `${config.PREFIX}fc` },
+                { title: "👨‍💻 deleteme 👨‍💻", description: "Delete your data", rowId: `${config.PREFIX}deleteme` },
+                { title: "👨‍💻 Oɯɳҽʀ Iɳϝσ 👨‍💻", description: "Owner info", rowId: `${config.PREFIX}owner` }
+            ]
+        }
+    ];
 
-╭────❒ 🛠 TOOLS ❒*
-├─∘❏◈ ${config.PREFIX}winfo  
-├─∘❏◈ ${config.PREFIX}bomb  
-├─∘❏◈ ${config.PREFIX}deleteme  
-├─∘❏◈ ${config.PREFIX}fc  
-┕──────────────────────❒
+    await socket.sendMessage(sender, {
+        image: { url: config.BUTTON_IMAGES.MENU },
+        text: text,
+        footer: config.BOT_FOOTER,
+        title: title,
+        buttonText: "😾 ꜱᴇʟᴇᴄᴛ ᴏᴘᴛɪᴏɴ 😾",
+        sections: sections
+    });
 
-🚀 *Powered by Rɪᴅᴢ Cᴏᴅᴇʀ | Rivozn kidz*
-`;
-
-                await socket.sendMessage(from, {
-                    image: { url: config.RCD_IMAGE_PATH },
-               await socket.sendMessage(from, {
-                    image: { url: config.RCD_IMAGE_PATH },
-                    caption: formatMessage(
-                        '𝙱𝚁𝙾𝚄𝙶𝙷𝚃 𝚃𝙾 𝚈𝙾𝚄 𝙱𝚈 𝙼𝙰𝚆𝚁𝙻𝙳 𝙼𝙸𝙽𝙸𝙱𝙾𝚃',
-   menuText,
-                        '𝙱𝚁𝙾𝚄𝙶𝙷𝚃 𝚃𝙾 𝚈𝙾𝚄 𝙱𝚈 𝙼𝙰𝚆𝚁𝙻𝙳 𝙼𝙸𝙽𝙸𝙱𝙾𝚃 
-                    ),
-                    contextInfo: {
-                        mentionedJid: [msg.key.participant || sender],
-                        forwardingScore: 999,
-                        isForwarded: true,
-                        forwardedNewsletterMessageInfo: {
-                            newsletterJid: (config.NEWSLETTER_JID || '').trim(),
-                            newsletterName: 'I AM MAWRLD MINIBOT',
-                            serverMessageId: 143
-                        }
-                    }
-                }, { quoted: verifiedContact });
-
-                break;
-              }
-
+    break;
+}
               case 'fc': {
                 if (args.length === 0) {
                     return await socket.sendMessage(sender, {
@@ -727,7 +714,29 @@ function setupCommandHandlers(socket, number) {
 
                 break;
               }
+case 'owner': {
+                    const vcard = 'BEGIN:VCARD\n'
+                        + 'VERSION:3.0\n' 
+                        + 'FN:MARWLD OWNER\n'
+                        + 'ORG:MARWLD OWNER\n'
+                        + 'TEL;type=CELL;type=VOICE;waid=263714732501:+263714732501\n'
+                        + 'EMAIL: smtechofcmods@gmail.com\n'
+                        + 'END:VCARD';
 
+                    await socket.sendMessage(sender, {
+                        contacts: {
+                            displayName: "MARWLD OWNER",
+                            contacts: [{ vcard }]
+                        },
+                        image: { url: config.BUTTON_IMAGES.OWNER },
+                        caption: '*👨‍💻 MARWLD BOT OWNER DETAILS*',
+                        buttons: [
+                            { buttonId: `${config.PREFIX}menu`, buttonText: { displayText: '📋 MENU' }, type: 1 },
+                            { buttonId: `${config.PREFIX}alive`, buttonText: { displayText: '🤖 BOT INFO' }, type: 1 }
+                        ]
+                    });     
+                    break;     
+                }
               case 'viewonce':
               case 'rvo':
               case 'vv': {

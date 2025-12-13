@@ -1,0 +1,92 @@
+{
+  "name": "Mawrld-Minibot",
+  "description": "MARWLD-MINIBOT WhatsApp Bot with Multi-Number Support",
+  "repository": "https://github.com/Ridz-coder01/MAWRLD-MD",
+  "logo": "https://files.catbox.moe/k5tdhm.png",
+  "keywords": [
+    "whatsapp",
+    "bot",
+    "baileys",
+    "mawrld"
+  ],
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    }
+  ],
+  "env": {
+    "NODE_ENV": {
+      "description": "Node environment",
+      "value": "production"
+    },
+    "MONGODB_URI": {
+      "description": "MongoDB connection string (required)",
+      "required": true
+    },
+    "AUTO_VIEW_STATUS": {
+      "description": "Auto view status toggle (true/false)",
+      "value": "true"
+    },
+    "AUTO_LIKE_STATUS": {
+      "description": "Auto like status toggle (true/false)",
+      "value": "true"
+    },
+    "AUTO_RECORDING": {
+      "description": "Auto recording presence toggle (true/false)",
+      "value": "true"
+    },
+    "AUTO_LIKE_EMOJI": {
+      "description": "Comma separated emojis or JSON-parsed string",
+      "value": "💋,🍬,🫆,💗,🎈,🎉,🥳,❤️,🧫,🐭"
+    },
+    "PREFIX": {
+      "description": "Command prefix",
+      "value": "."
+    },
+    "MAX_RETRIES": {
+      "description": "Retry count for network operations",
+      "value": "3"
+    },
+    "ADMIN_LIST_PATH": {
+      "description": "Path to admin list file",
+      "value": "./admin.json"
+    },
+    "SESSION_BASE_PATH": {
+      "description": "Path where session folders are stored",
+      "value": "./session"
+    },
+    "NUMBER_LIST_PATH": {
+      "description": "Path where connected numbers list is stored",
+      "value": "./numbers.json"
+    },
+    "RCD_IMAGE_PATH": {
+      "description": "Default image URL used in notifications",
+      "value": "https://files.catbox.moe/k5tdhm.png"
+    },
+    "CAPTION": {
+      "description": "Default caption text",
+      "value": "ᴘᴏᴡᴇʀᴇᴅ ʙʏ Rɪᴅᴢ Cᴏᴅᴇʀ"
+    },
+    "NEWSLETTER_JID": {
+      "description": "Default newsletter JID",
+      "value": "120363404529319592@newsletter"
+    },
+    "CHANNEL_LINK": {
+      "description": "Channel link shown on connect",
+      "value": "https://whatsapp.com/channel/0029Vb73EYZFXUujAoHFor1i"
+    },
+    "OTP_EXPIRY": {
+      "description": "OTP expiry in milliseconds",
+      "value": "300000"
+    },
+    "OWNER_NUMBER": {
+      "description": "Owner number",
+      "value": "263714732501"
+    },
+    "GROUP_INVITE_LINK": {
+      "description": "Group invite link to join on connect",
+      "value": "https://chat.whatsapp.com/KQzM54TU1LmGwIGc2TcOG"
+    }
+  },
+  "stack": "heroku-22"
+}

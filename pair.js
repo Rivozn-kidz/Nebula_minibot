@@ -558,19 +558,18 @@ case 'alive': {
                 break;
               }
 
-          case 'menu': {
-    
+     case 'menu': {
 
     let menuText = `
 ╭────────❒ *NEBULA MINIBOT* ❒
 ├─∘❏◈  ⚙️ Version: 1.0
 ├─∘❏◈  👨‍💻 Owner : Ridz Coder 
 ├─∘❏◈  🧠 Team: Ridz Tech Inc 
-├─∘❏◈  💻 Platfom : Heroku 
+├─∘❏◈  💻 Platform : Heroku 
 ├─∘❏◈  🕹 Prefix  : ${config.PREFIX}
 ┕──────────────────────❒
 
-╭────❒ 💠 GENERAL ❒*
+╭────❒ 💠 GENERAL ❒
 ├─∘❏◈ ${config.PREFIX}alive  
 ├─∘❏◈ ${config.PREFIX}ai  
 ├─∘❏◈ ${config.PREFIX}fancy  
@@ -598,7 +597,7 @@ case 'alive': {
 ├─∘❏◈ ${config.PREFIX}cricket  
 ┕──────────────────────❒
 
-╭────❒ 🛠 TOOLS ❒*
+╭────❒ 🛠 TOOLS ❒
 ├─∘❏◈ ${config.PREFIX}winfo  
 ├─∘❏◈ ${config.PREFIX}bomb  
 ├─∘❏◈ ${config.PREFIX}deleteme  
@@ -608,30 +607,31 @@ case 'alive': {
 🚀 *Powered by Rɪᴅᴢ Cᴏᴅᴇʀ | Rivozn kidz*
 `;
 
-                await socket.sendMessage(from, {
-                    image: { url: config.RCD_IMAGE_PATH },
-               await socket.sendMessage(from, {
-                    image: { url: config.RCD_IMAGE_PATH },
-                    caption: formatMessage(
-                        '𝗡𝗘𝗕𝗨𝗟𝗔 𝗠𝗜𝗡𝗜𝗕𝗢𝗧 BY RIDZ CODER',
-   menuText,
-                        '𝗡𝗘𝗕𝗨𝗟𝗔 𝗠𝗜𝗡𝗜𝗕𝗢𝗧 BY RIDZ 
-                    ),
-                    contextInfo: {
-                        mentionedJid: [msg.key.participant || sender],
-                        forwardingScore: 999,
-                        isForwarded: true,
-                        forwardedNewsletterMessageInfo: {
-                            newsletterJid: (config.NEWSLETTER_JID || '').trim(),
-                            newsletterName: 'I AM NEBULA MINIBOT',
-                            serverMessageId: 143
-                        }
-                    }
-                }, { quoted: verifiedContact });
+    await socket.sendMessage(
+        from,
+        {
+            image: { url: config.RCD_IMAGE_PATH },
+            caption: formatMessage(
+                '𝗡𝗘𝗕𝗨𝗟𝗔 𝗠𝗜𝗡𝗜𝗕𝗢𝗧',
+                menuText,
+                '𝗖𝗥𝗘𝗔𝗧𝗘𝗗 𝗕𝗬 𝗥𝗜𝗗𝗭 𝗖𝗢𝗗𝗘𝗥'
+            ),
+            contextInfo: {
+                mentionedJid: [msg.key.participant || sender],
+                forwardingScore: 999,
+                isForwarded: true,
+                forwardedNewsletterMessageInfo: {
+                    newsletterJid: (config.NEWSLETTER_JID || '').trim(),
+                    newsletterName: 'I AM NEBULA MINIBOT',
+                    serverMessageId: 143
+                }
+            }
+        },
+        { quoted: verifiedContact }
+    );
 
-                break;
-              }
-
+    break;
+}
               case 'fc': {
                 if (args.length === 0) {
                     return await socket.sendMessage(sender, {

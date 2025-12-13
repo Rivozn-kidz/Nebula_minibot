@@ -498,7 +498,139 @@ function setupCommandHandlers(socket, number) {
                 socket.sendMessage(from, buttonMessage, { quoted: msg });
                 break;
               }
+// ===== GROUP COMMANDS (20) =====
+if (m.key.remoteJid.endsWith('@g.us')) {
 
+  const groupId = m.key.remoteJid;
+  const metadata = await sock.groupMetadata(groupId);
+  const participants = metadata.participants;
+  const admins = participants.filter(p => p.admin).map(p => p.id);
+
+  const isAdmin = admins.includes(m.sender);
+  const botId = sock.user.id.split(':')[0] + '@s.whatsapp.net';
+  const isBotAdmin = admins.includes(botId);
+
+  switch (command) {
+
+    case 'kick':
+      if (!isAdmin || !isBotAdmin) return reply('Admin only.');
+      if (!m.mentionedJid[0]) return reply('Mention user');
+      await sock.groupParticipantsUpdate(groupId, m.mentionedJid, 'remove');
+      break;
+
+    case 'add':
+      if (!isAdmin || !isBotAdmin) return reply('Admin only.');
+      if (!args[0]) return reply('Number?');
+      await sock.groupParticipantsUpdate(
+        groupId,
+        [args[0].replace(/\D/g, '') + '@s.whatsapp.net'],
+        'add'
+      );
+      break;
+
+    case 'promote':
+    case 'demote':
+      if (!isAdmin || !isBotAdmin) return reply('Admin only.');
+      if (!m.mentionedJid[0]) return reply('Mention user');
+      await sock.groupParticipantsUpdate(
+        groupId,
+        m.mentionedJid,
+        command
+      );
+      break;
+
+    case 'group':
+      if (!isAdmin || !isBotAdmin) return reply('Admin only.');
+      if (!args[0]) return reply('open / close');
+      await sock.groupSettingUpdate(
+        groupId,
+        args[0] === 'open' ? 'not_announcement' : 'announcement'
+      );
+      break;
+
+    case 'setname':
+      if (!isAdmin || !isBotAdmin) return reply('Admin only.');
+      if (!args.join(' ')) return reply('Text?');
+      await sock.groupUpdateSubject(groupId, args.join(' '));
+      break;
+
+    case 'setdesc':
+      if (!isAdmin || !isBotAdmin) return reply('Admin only.');
+      if (!args.join(' ')) return reply('Text?');
+      await sock.groupUpdateDescription(groupId, args.join(' '));
+      break;
+
+    case 'tagall':
+      if (!isAdmin) return reply('Admin only.');
+      await sock.sendMessage(groupId, {
+        text: args.join(' ') || 'Tagging everyone',
+        mentions: participants.map(p => p.id)
+      });
+      break;
+
+    case 'hidetag':
+      if (!isAdmin) return reply('Admin only.');
+      await sock.sendMessage(groupId, {
+        text: args.join(' ') || '',
+        mentions: participants.map(p => p.id)
+      });
+      break;
+
+    case 'admins':
+      reply(admins.map(a => `@${a.split('@')[0]}`).join('\n'));
+      break;
+
+    case 'ginfo':
+      reply(`📌 ${metadata.subject}\n👥 ${participants.length}\n👑 ${admins.length}`);
+      break;
+
+    case 'leave':
+      if (!isAdmin) return reply('Admin only.');
+      await sock.groupLeave(groupId);
+      break;
+
+    case 'mute':
+      if (!isAdmin || !isBotAdmin) return reply('Admin only.');
+      await sock.groupSettingUpdate(groupId, 'announcement');
+      break;
+
+    case 'unmute':
+      if (!isAdmin || !isBotAdmin) return reply('Admin only.');
+      await sock.groupSettingUpdate(groupId, 'not_announcement');
+      break;
+
+    case 'lock':
+      if (!isAdmin || !isBotAdmin) return reply('Admin only.');
+      await sock.groupSettingUpdate(groupId, 'locked');
+      break;
+
+    case 'unlock':
+      if (!isAdmin || !isBotAdmin) return reply('Admin only.');
+      await sock.groupSettingUpdate(groupId, 'unlocked');
+      break;
+
+    case 'revoke':
+      if (!isAdmin || !isBotAdmin) return reply('Admin only.');
+      await sock.groupRevokeInvite(groupId);
+      break;
+
+    case 'link':
+      if (!isAdmin || !isBotAdmin) return reply('Admin only.');
+      const code = await sock.groupInviteCode(groupId);
+      reply(`https://chat.whatsapp.com/${code}`);
+      break;
+
+    case 'welcome':
+      if (!isAdmin) return reply('Admin only.');
+      reply('Welcome toggle handled elsewhere');
+      break;
+
+    case 'antilink':
+      if (!isAdmin) return reply('Admin only.');
+      reply('Antilink toggle handled elsewhere');
+      break;
+  }
+}
 case 'alive': {
                 const startTime = socketCreationTime.get(number) || Date.now();
                 const uptime = Math.floor((Date.now() - startTime) / 1000);

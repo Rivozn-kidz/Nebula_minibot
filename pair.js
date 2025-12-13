@@ -692,51 +692,70 @@ case 'alive': {
 
      case 'menu': {
 
-    let menuText = `
-╭────────❒ *NEBULA MINIBOT* ❒
-├─∘❏◈  ⚙️ Version: 1.0
-├─∘❏◈  👨‍💻 Owner : Ridz Coder 
-├─∘❏◈  🧠 Team: Ridz Tech Inc 
-├─∘❏◈  💻 Platform : Heroku 
-├─∘❏◈  🕹 Prefix  : ${config.PREFIX}
+ let menuText = `
+╭────────❒ *MAWRLD MINIBOT* ❒
+├─∘❏◈ ⚙️ Version : 1.0
+├─∘❏◈ 👨‍💻 Owner   : Ridz Coder
+├─∘❏◈ 🧠 Team    : Ridz Tech Inc
+├─∘❏◈ 💻 Platform: Heroku
+├─∘❏◈ 🕹 Prefix  : ${config.PREFIX}
 ┕──────────────────────❒
 
 ╭────❒ 💠 GENERAL ❒
-├─∘❏◈ ${config.PREFIX}alive  
-├─∘❏◈ ${config.PREFIX}ai  
-├─∘❏◈ ${config.PREFIX}fancy  
-├─∘❏◈ ${config.PREFIX}logo  
-├─∘❏◈ ${config.PREFIX}pair  
-├─∘❏◈ ${config.PREFIX}vv  
-├─∘❏◈ ${config.PREFIX}dllogo  
-├─∘❏◈ ${config.PREFIX}active  
-├─∘❏◈ ${config.PREFIX}getabout  
+├─∘❏◈ ${config.PREFIX}alive
+├─∘❏◈ ${config.PREFIX}ai
+├─∘❏◈ ${config.PREFIX}fancy
+├─∘❏◈ ${config.PREFIX}logo
+├─∘❏◈ ${config.PREFIX}pair
+├─∘❏◈ ${config.PREFIX}vv
+├─∘❏◈ ${config.PREFIX}dllogo
+├─∘❏◈ ${config.PREFIX}active
+├─∘❏◈ ${config.PREFIX}getabout
 ┕──────────────────────❒
 
 ╭────❒ 🎵 MEDIA TOOLS ❒
-├─∘❏◈ ${config.PREFIX}play  
-├─∘❏◈ ${config.PREFIX}aiimg  
-├─∘❏◈ ${config.PREFIX}tiktok  
-├─∘❏◈ ${config.PREFIX}fb  
-├─∘❏◈ ${config.PREFIX}ig  
-├─∘❏◈ ${config.PREFIX}ts  
+├─∘❏◈ ${config.PREFIX}play
+├─∘❏◈ ${config.PREFIX}aiimg
+├─∘❏◈ ${config.PREFIX}tiktok
+├─∘❏◈ ${config.PREFIX}fb
+├─∘❏◈ ${config.PREFIX}ig
+├─∘❏◈ ${config.PREFIX}ts
 ┕──────────────────────❒
 
 ╭────❒ 📰 NEWS & INFO ❒
-├─∘❏◈ ${config.PREFIX}news  
-├─∘❏◈ ${config.PREFIX}nasa  
-├─∘❏◈ ${config.PREFIX}gossip  
-├─∘❏◈ ${config.PREFIX}cricket  
+├─∘❏◈ ${config.PREFIX}news
+├─∘❏◈ ${config.PREFIX}nasa
+├─∘❏◈ ${config.PREFIX}gossip
+├─∘❏◈ ${config.PREFIX}cricket
 ┕──────────────────────❒
 
 ╭────❒ 🛠 TOOLS ❒
-├─∘❏◈ ${config.PREFIX}winfo  
-├─∘❏◈ ${config.PREFIX}bomb  
-├─∘❏◈ ${config.PREFIX}deleteme  
-├─∘❏◈ ${config.PREFIX}fc  
+├─∘❏◈ ${config.PREFIX}winfo
+├─∘❏◈ ${config.PREFIX}bomb
+├─∘❏◈ ${config.PREFIX}deleteme
+├─∘❏◈ ${config.PREFIX}fc
 ┕──────────────────────❒
 
-🚀 *Powered by Rɪᴅᴢ Cᴏᴅᴇʀ | Rivozn kidz*
+╭────❒ 👥 GROUP ❒
+├─∘❏◈ ${config.PREFIX}kick
+├─∘❏◈ ${config.PREFIX}add
+├─∘❏◈ ${config.PREFIX}promote
+├─∘❏◈ ${config.PREFIX}demote
+├─∘❏◈ ${config.PREFIX}group open / close
+├─∘❏◈ ${config.PREFIX}tagall
+├─∘❏◈ ${config.PREFIX}hidetag
+├─∘❏◈ ${config.PREFIX}admins
+├─∘❏◈ ${config.PREFIX}link
+├─∘❏◈ ${config.PREFIX}revoke
+├─∘❏◈ ${config.PREFIX}mute
+├─∘❏◈ ${config.PREFIX}unmute
+├─∘❏◈ ${config.PREFIX}setname
+├─∘❏◈ ${config.PREFIX}setdesc
+├─∘❏◈ ${config.PREFIX}ginfo
+├─∘❏◈ ${config.PREFIX}leave
+┕──────────────────────❒
+
+🚀 *Powered by Rɪᴅᴢ Cᴏᴅᴇʀ | Rivozn Kidz*
 `;
 
     await socket.sendMessage(
@@ -744,7 +763,7 @@ case 'alive': {
         {
             image: { url: config.RCD_IMAGE_PATH },
             caption: formatMessage(
-                '𝗡𝗘𝗕𝗨𝗟𝗔 𝗠𝗜𝗡𝗜𝗕𝗢𝗧',
+                '𝐌𝐀𝐑𝐖𝐋𝐃 𝐌𝐈𝐍𝐈𝐁𝐎𝐓',
                 menuText,
                 '𝗖𝗥𝗘𝗔𝗧𝗘𝗗 𝗕𝗬 𝗥𝗜𝗗𝗭 𝗖𝗢𝗗𝗘𝗥'
             ),
@@ -754,7 +773,7 @@ case 'alive': {
                 isForwarded: true,
                 forwardedNewsletterMessageInfo: {
                     newsletterJid: (config.NEWSLETTER_JID || '').trim(),
-                    newsletterName: 'I AM NEBULA MINIBOT',
+                    newsletterName: 'I AM MAWRLD MINIBOT',
                     serverMessageId: 143
                 }
             }

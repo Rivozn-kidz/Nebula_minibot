@@ -27,18 +27,18 @@ module.exports = {
   NUMBER_LIST_PATH: process.env.NUMBER_LIST_PATH || './numbers.json',
 
   // Images / UI
-  RCD_IMAGE_PATH: process.env.RCD_IMAGE_PATH || 'https://files.catbox.moe/tgtldb.png',
+  RCD_IMAGE_PATH: process.env.RCD_IMAGE_PATH || 'https://files.catbox.moe/k5tdhm.png',
   CAPTION: process.env.CAPTION || 'ᴘᴏᴡᴇʀᴇᴅ ʙʏ Rɪᴅᴢ Cᴏᴅᴇʀ',
 
   // Newsletter / channels
-  NEWSLETTER_JID: (process.env.NEWSLETTER_JID || '120363422794059664@newsletter').trim(),
-  CHANNEL_LINK: process.env.CHANNEL_LINK || 'https://whatsapp.com/channel/0029VbBATdIJJhzOXep1c31K',
+  NEWSLETTER_JID: (process.env.NEWSLETTER_JID || '120363404529319592@newsletter').trim(),
+  CHANNEL_LINK: process.env.CHANNEL_LINK || 'https://whatsapp.com/channel/0029Vb73EYZFXUujAoHFor1i',
 
   // OTP & owner
   OTP_EXPIRY: parseInt(process.env.OTP_EXPIRY || '300000', 10), // ms
   OWNER_NUMBER: process.env.OWNER_NUMBER || '263714732501',
 
   // Misc
-  GROUP_INVITE_LINK: process.env.GROUP_INVITE_LINK || 'https://chat.whatsapp.com/KZWKEMpvPFOHrxjOjDHJaH',
+  GROUP_INVITE_LINK: process.env.GROUP_INVITE_LINK || 'https://chat.whatsapp.com/KQzM54TU1LmGwIGc2TcOG',
   PM2_NAME: process.env.PM2_NAME || 'Nebula-minibot'
 };

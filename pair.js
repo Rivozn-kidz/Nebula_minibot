@@ -620,6 +620,20 @@ if (m.key.remoteJid.endsWith('@g.us')) {
       reply(`https://chat.whatsapp.com/${code}`);
       break;
 
+case 'ping': {
+  const start = Date.now();
+
+  await sock.sendMessage(m.key.remoteJid, {
+    text: '🏓 Pinging...'
+  });
+
+  const speed = Date.now() - start;
+
+  await sock.sendMessage(m.key.remoteJid, {
+    text: `🏓 Pong!\n⚡ Speed: ${speed} ms`
+  });
+}
+break;
     case 'welcome':
       if (!isAdmin) return reply('Admin only.');
       reply('Welcome toggle handled elsewhere');
@@ -703,6 +717,7 @@ case 'alive': {
 
 ╭────❒ 💠 GENERAL ❒
 ├─∘❏◈ ${config.PREFIX}alive
+├─∘❏◈ ${config.PREFIX}ping
 ├─∘❏◈ ${config.PREFIX}ai
 ├─∘❏◈ ${config.PREFIX}fancy
 ├─∘❏◈ ${config.PREFIX}logo

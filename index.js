@@ -1,31 +1,37 @@
 const express = require('express');
+const bodyParser = require('body-parser');
+const path = require('path');
+
 const app = express();
-__path = process.cwd()
-const bodyParser = require("body-parser");
 const PORT = process.env.PORT || 8000;
-let code = require('./pair');
+const __path = process.cwd();
 
 require('events').EventEmitter.defaultMaxListeners = 500;
 
-app.use('/code', code);
-app.use('/pair', async (req, res, next) => {
-    res.sendFile(__path + '/pair.html');
-});
-app.use('/', async (req, res, next) => {
-    res.sendFile(__path + '/main.html');
-});
-
+/* ---------- MIDDLEWARE FIRST ---------- */
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// ✅ Changed here to bind on 0.0.0.0
+/* ---------- ROUTES ---------- */
+const code = require('./pair');
+
+app.use('/code', code);
+
+app.get('/pair', (req, res) => {
+  res.sendFile(path.join(__path, 'pair.html'));
+});
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__path, 'main.html'));
+});
+
+/* ---------- HEROKU LISTENER ---------- */
 app.listen(PORT, '0.0.0.0', () => {
-    console.log(`
+  console.log(`
 Don't Forget To Give Star ‼️
-
 ᴘᴏᴡᴇʀᴇᴅ ʙʏ Rɪᴅᴢ Cᴏᴅᴇʀ
-
-Server running on http://0.0.0.0:` + PORT);
+Server running on port ${PORT}
+`);
 });
 
 module.exports = app;

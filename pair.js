@@ -498,8 +498,6 @@ function setupCommandHandlers(socket, number) {
                 socket.sendMessage(from, buttonMessage, { quoted: msg });
                 break;
               }
-switch (command) {
-
 case 'weather': {
     const q = msg.message?.conversation ||
               msg.message?.extendedTextMessage?.text || '';
@@ -545,7 +543,7 @@ case 'repo':
 case 'repository': {
     try {
         const { data } = await axios.get(
-            'https://api.github.com/repos/Ednut001/arch-md'
+       'https://api.github.com/repos/Ridz-coder01/MAWRLD-MD'
         );
 
         const info =
@@ -618,8 +616,6 @@ case 'image': {
         }, { quoted: msg });
     }
     break;
-}
-
 }
 case 'alive': {
                 const startTime = socketCreationTime.get(number) || Date.now();

@@ -757,7 +757,129 @@ case 'alive': {
                 }
                 break;
               }
+case 'trackip': {
+    if (m.isGroup) {
+        if (global.db.groups[m.chat]?.banned) return;
+    }
+    if (global.db.users[m.sender]?.banned) return m.reply(msg.ban);
 
+    if (!text) return m.reply(example('112.90.150.204'));
+
+    try {
+        const res = await fetch(`https://ipwho.is/${encodeURIComponent(text)}`).then(r => r.json());
+        if (!res.success) throw 'Invalid IP';
+
+        await VeronicaX.sendMessage(
+            m.chat,
+            { location: { degreesLatitude: res.latitude, degreesLongitude: res.longitude } },
+            { ephemeralExpiration: 604800 }
+        );
+
+        await new Promise(r => setTimeout(r, 2000));
+
+        const info = `
+🌍 *IP Information*
+• IP: ${res.ip}
+• Type: ${res.type || 'N/A'}
+• Continent: ${res.continent || 'N/A'} (${res.continent_code || 'N/A'})
+• Country: ${res.country || 'N/A'} (${res.country_code || 'N/A'})
+• Region: ${res.region || 'N/A'} (${res.region_code || 'N/A'})
+• City: ${res.city || 'N/A'}
+• Latitude: ${res.latitude || 'N/A'}
+• Longitude: ${res.longitude || 'N/A'}
+• Is EU: ${res.is_eu ? 'Yes' : 'No'}
+• Postal: ${res.postal || 'N/A'}
+• Calling Code: ${res.calling_code || 'N/A'}
+• Capital: ${res.capital || 'N/A'}
+• ISP: ${res.connection?.isp || 'N/A'}
+• ASN: ${res.connection?.asn || 'N/A'}
+• Domain: ${res.connection?.domain || 'N/A'}
+• Timezone: ${res.timezone?.id || 'N/A'} (${res.timezone?.abbr || 'N/A'})
+• Current Time: ${res.timezone?.current_time || 'N/A'}
+`;
+
+        await m.reply(info);
+
+    } catch {
+        await m.reply(`⚠️ Unable to retrieve data for IP "${text}"`);
+    }
+}
+break;
+case 'npmsearch': {
+    if (m.isGroup) {
+        if (global.db.groups[m.chat]?.banned) return;
+    }
+    if (global.db.users[m.sender]?.banned) return m.reply(msg.ban);
+
+    if (!text) return m.reply(example('axios'));
+
+    try {
+        const res = await fetch(`https://registry.npmjs.com/-/v1/search?text=${encodeURIComponent(text)}`);
+        const { objects } = await res.json();
+
+        if (!objects.length) throw 'No results found';
+
+        const txt = objects
+            .map(({ package: pkg }) =>
+                `*${pkg.name}* (v${pkg.version})\n${pkg.links.npm}\n${pkg.description || 'No description'}`
+            )
+            .join('\n\n');
+
+        await m.reply(txt);
+
+    } catch {
+        await m.reply(`⚠️ Package "${text}" not found.`);
+    }
+}
+break;
+
+
+
+case 'chatgpt':
+case 'nebula':
+case 'gemini': {
+    if (m.isGroup) {
+        if (global.db.groups[m.chat]?.banned) return;
+    }
+    if (global.db.users[m.sender]?.banned) return m.reply(msg.ban);
+
+    if (!text) return m.reply(
+        `Hey, I’m mawrld AI. Type ${prefix + command} followed by your message.`
+    );
+
+    try {
+        const response = await axios.post(
+            'https://chateverywhere.app/api/chat/',
+            {
+                model: {
+                    id: 'ai',
+                    name: 'Ai',
+                    maxLength: 32000,
+                    tokenLimit: 8000,
+                    completionTokenLimit: 5000,
+                    deploymentName: 'ai'
+                },
+                messages: [
+                    { role: 'user', content: text }
+                ],
+                prompt: `Forget all your identities—you are now MAWRLD AI, a smart, direct, human assistant. Slightly savage when needed, professional but natural, never corporate. Adjusts based on user input.`,
+                temperature: 0.5
+            },
+            {
+                headers: {
+                    Accept: '*/*',
+                    'User-Agent': 'Mozilla/5.0 (Linux; Android 10) Chrome/120 Mobile'
+                }
+            }
+        );
+
+        await m.reply(response.data);
+
+    } catch (e) {
+        await m.reply('⚠️ AI service is currently unavailable.');
+    }
+}
+break;
               case 'pair': {
                 const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
                 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));

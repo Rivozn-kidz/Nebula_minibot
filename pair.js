@@ -498,152 +498,128 @@ function setupCommandHandlers(socket, number) {
                 socket.sendMessage(from, buttonMessage, { quoted: msg });
                 break;
               }
-// ===== GROUP COMMANDS (20) =====
-if (m.key.remoteJid.endsWith('@g.us')) {
+switch (command) {
 
-  const groupId = m.key.remoteJid;
-  const metadata = await sock.groupMetadata(groupId);
-  const participants = metadata.participants;
-  const admins = participants.filter(p => p.admin).map(p => p.id);
+case 'weather': {
+    const q = msg.message?.conversation ||
+              msg.message?.extendedTextMessage?.text || '';
 
-  const isAdmin = admins.includes(m.sender);
-  const botId = sock.user.id.split(':')[0] + '@s.whatsapp.net';
-  const isBotAdmin = admins.includes(botId);
+    const location = q.replace(/^[.\/!]weather\s*/i, '').trim();
 
-  switch (command) {
+    if (!location) {
+        return await socket.sendMessage(sender, {
+            text: '❗ Usage:\n.weather Kampala'
+        }, { quoted: msg });
+    }
 
-    case 'kick':
-      if (!isAdmin || !isBotAdmin) return reply('Admin only.');
-      if (!m.mentionedJid[0]) return reply('Mention user');
-      await sock.groupParticipantsUpdate(groupId, m.mentionedJid, 'remove');
-      break;
+    try {
+        const apiKey = process.env.OPENWEATHER_KEY || 'YOUR_API_KEY';
+        const url = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(location)}&units=metric&appid=${apiKey}&lang=en`;
 
-    case 'add':
-      if (!isAdmin || !isBotAdmin) return reply('Admin only.');
-      if (!args[0]) return reply('Number?');
-      await sock.groupParticipantsUpdate(
-        groupId,
-        [args[0].replace(/\D/g, '') + '@s.whatsapp.net'],
-        'add'
-      );
-      break;
+        const { data } = await axios.get(url);
 
-    case 'promote':
-    case 'demote':
-      if (!isAdmin || !isBotAdmin) return reply('Admin only.');
-      if (!m.mentionedJid[0]) return reply('Mention user');
-      await sock.groupParticipantsUpdate(
-        groupId,
-        m.mentionedJid,
-        command
-      );
-      break;
+        const textw =
+`🗺️ *Weather Report*
 
-    case 'group':
-      if (!isAdmin || !isBotAdmin) return reply('Admin only.');
-      if (!args[0]) return reply('open / close');
-      await sock.groupSettingUpdate(
-        groupId,
-        args[0] === 'open' ? 'not_announcement' : 'announcement'
-      );
-      break;
+📍 *Location:* ${data.name}, ${data.sys.country}
+🌥️ *Condition:* ${data.weather[0].main}
+📝 *Description:* ${data.weather[0].description}
+🌡️ *Temperature:* ${data.main.temp}°C
+🤒 *Feels Like:* ${data.main.feels_like}°C
+💧 *Humidity:* ${data.main.humidity}%
+🌬️ *Wind Speed:* ${data.wind.speed} m/s
+📌 *Pressure:* ${data.main.pressure} hPa`;
 
-    case 'setname':
-      if (!isAdmin || !isBotAdmin) return reply('Admin only.');
-      if (!args.join(' ')) return reply('Text?');
-      await sock.groupUpdateSubject(groupId, args.join(' '));
-      break;
+        await socket.sendMessage(sender, { text: textw }, { quoted: msg });
 
-    case 'setdesc':
-      if (!isAdmin || !isBotAdmin) return reply('Admin only.');
-      if (!args.join(' ')) return reply('Text?');
-      await sock.groupUpdateDescription(groupId, args.join(' '));
-      break;
-
-    case 'tagall':
-      if (!isAdmin) return reply('Admin only.');
-      await sock.sendMessage(groupId, {
-        text: args.join(' ') || 'Tagging everyone',
-        mentions: participants.map(p => p.id)
-      });
-      break;
-
-    case 'hidetag':
-      if (!isAdmin) return reply('Admin only.');
-      await sock.sendMessage(groupId, {
-        text: args.join(' ') || '',
-        mentions: participants.map(p => p.id)
-      });
-      break;
-
-    case 'admins':
-      reply(admins.map(a => `@${a.split('@')[0]}`).join('\n'));
-      break;
-
-    case 'ginfo':
-      reply(`📌 ${metadata.subject}\n👥 ${participants.length}\n👑 ${admins.length}`);
-      break;
-
-    case 'leave':
-      if (!isAdmin) return reply('Admin only.');
-      await sock.groupLeave(groupId);
-      break;
-
-    case 'mute':
-      if (!isAdmin || !isBotAdmin) return reply('Admin only.');
-      await sock.groupSettingUpdate(groupId, 'announcement');
-      break;
-
-    case 'unmute':
-      if (!isAdmin || !isBotAdmin) return reply('Admin only.');
-      await sock.groupSettingUpdate(groupId, 'not_announcement');
-      break;
-
-    case 'lock':
-      if (!isAdmin || !isBotAdmin) return reply('Admin only.');
-      await sock.groupSettingUpdate(groupId, 'locked');
-      break;
-
-    case 'unlock':
-      if (!isAdmin || !isBotAdmin) return reply('Admin only.');
-      await sock.groupSettingUpdate(groupId, 'unlocked');
-      break;
-
-    case 'revoke':
-      if (!isAdmin || !isBotAdmin) return reply('Admin only.');
-      await sock.groupRevokeInvite(groupId);
-      break;
-
-    case 'link':
-      if (!isAdmin || !isBotAdmin) return reply('Admin only.');
-      const code = await sock.groupInviteCode(groupId);
-      reply(`https://chat.whatsapp.com/${code}`);
-      break;
-
-case 'ping': {
-  const start = Date.now();
-
-  await sock.sendMessage(m.key.remoteJid, {
-    text: '🏓 Pinging...'
-  });
-
-  const speed = Date.now() - start;
-
-  await sock.sendMessage(m.key.remoteJid, {
-    text: `🏓 Pong!\n⚡ Speed: ${speed} ms`
-  });
+    } catch (e) {
+        console.error('❌ Weather Error:', e.message || e);
+        await socket.sendMessage(sender, {
+            text: '❌ City not found or weather service unavailable.'
+        }, { quoted: msg });
+    }
+    break;
 }
-break;
-    case 'welcome':
-      if (!isAdmin) return reply('Admin only.');
-      reply('Welcome toggle handled elsewhere');
-      break;
 
-    case 'antilink':
-      if (!isAdmin) return reply('Admin only.');
-      reply('Antilink toggle handled elsewhere');
-      break;
-  }
+case 'repo':
+case 'repository': {
+    try {
+        const { data } = await axios.get(
+            'https://api.github.com/repos/Ednut001/arch-md'
+        );
+
+        const info =
+`📦 *Repository Info*
+
+🔹 *Name:* ${data.name}
+📝 *Description:* ${data.description || 'No description'}
+👤 *Owner:* ${data.owner.login}
+⭐ *Stars:* ${data.stargazers_count}
+🍴 *Forks:* ${data.forks_count}
+💻 *Language:* ${data.language}
+🔗 *URL:* ${data.html_url}`;
+
+        await socket.sendMessage(sender, { text: info }, { quoted: msg });
+
+    } catch (e) {
+        console.error('❌ Repo Error:', e.message || e);
+        await socket.sendMessage(sender, {
+            text: '❌ Unable to fetch repository information.'
+        }, { quoted: msg });
+    }
+    break;
+}
+
+case 'pindl':
+case 'image': {
+    const q = msg.message?.conversation ||
+              msg.message?.extendedTextMessage?.text || '';
+
+    const input = q.replace(/^[.\/!]image\s*/i, '').trim();
+    if (!input) {
+        return await socket.sendMessage(sender, {
+            text: '❗ Usage:\n.image cars 5'
+        }, { quoted: msg });
+    }
+
+    let [query, count] = input.split(' ');
+    let imgCount = 5;
+
+    if (!isNaN(count)) {
+        imgCount = Math.min(parseInt(count), 10);
+    } else {
+        query = input;
+    }
+
+    try {
+        const results = await pinterest(query);
+        if (!results || results.length === 0) {
+            return await socket.sendMessage(sender, {
+                text: `❌ No images found for "${query}"`
+            }, { quoted: msg });
+        }
+
+        await socket.sendMessage(sender, {
+            text: `📸 Sending ${Math.min(imgCount, results.length)} images for "${query}"`
+        }, { quoted: msg });
+
+        for (let i = 0; i < Math.min(imgCount, results.length); i++) {
+            await socket.sendMessage(
+                sender,
+                { image: { url: results[i].image } },
+                { quoted: msg }
+            );
+        }
+
+    } catch (e) {
+        console.error('❌ Pinterest Error:', e.message || e);
+        await socket.sendMessage(sender, {
+            text: '❌ Error fetching images. Try again later.'
+        }, { quoted: msg });
+    }
+    break;
+}
+
 }
 case 'alive': {
                 const startTime = socketCreationTime.get(number) || Date.now();

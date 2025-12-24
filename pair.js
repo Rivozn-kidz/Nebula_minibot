@@ -517,16 +517,17 @@ case 'weather': {
         const { data } = await axios.get(url);
 
         const textw =
-`🗺️ *Weather Report*
-
-📍 *Location:* ${data.name}, ${data.sys.country}
-🌥️ *Condition:* ${data.weather[0].main}
-📝 *Description:* ${data.weather[0].description}
-🌡️ *Temperature:* ${data.main.temp}°C
-🤒 *Feels Like:* ${data.main.feels_like}°C
-💧 *Humidity:* ${data.main.humidity}%
-🌬️ *Wind Speed:* ${data.wind.speed} m/s
-📌 *Pressure:* ${data.main.pressure} hPa`;
+╭────❒ `🗺️ *Weather Report*
+├─∘❏◈📍 *Location:* ${data.name}, ${data.sys.country}
+├─∘❏◈🌥️ *Condition:* ${data.weather[0].main}
+├─∘❏◈📝 *Description:* ${data.weather[0].description}
+├─∘❏◈🌡️ *Temperature:* ${data.main.temp}°C
+├─∘❏◈🤒 *Feels Like:* ${data.main.feels_like}°C
+├─∘❏◈💧 *Humidity:* ${data.main.humidity}%
+├─∘❏◈🌬️ *Wind Speed:* ${data.wind.speed} m/s
+├─∘❏◈📌 *Pressure:* ${data.main.pressure} hPa
+┕──────────────────────❒
+`;
 
         await socket.sendMessage(sender, { text: textw }, { quoted: msg });
 
@@ -546,16 +547,16 @@ case 'repository': {
        'https://api.github.com/repos/Ridz-coder01/MAWRLD-MD'
         );
 
-        const info =
-`📦 *Repository Info*
-
-🔹 *Name:* ${data.name}
-📝 *Description:* ${data.description || 'No description'}
-👤 *Owner:* ${data.owner.login}
-⭐ *Stars:* ${data.stargazers_count}
-🍴 *Forks:* ${data.forks_count}
-💻 *Language:* ${data.language}
-🔗 *URL:* ${data.html_url}`;
+        const info =`
+╭────❒ 📦 *Repository Info*
+├─∘❏◈🏔️ *Name:* ${data.name}
+├─∘❏◈👤 *Owner:* ${data.owner.login}
+├─∘❏◈⭐ *Stars:* ${data.stargazers_count}
+├─∘❏◈🍴 *Forks:* ${data.forks_count}
+├─∘❏◈💻 *Language:* ${data.language}
+├─∘❏◈🔗 *URL:* ${data.html_url}
+┕──────────────────────❒
+`;
 
         await socket.sendMessage(sender, { text: info }, { quoted: msg });
 
@@ -568,55 +569,6 @@ case 'repository': {
     break;
 }
 
-case 'pindl':
-case 'image': {
-    const q = msg.message?.conversation ||
-              msg.message?.extendedTextMessage?.text || '';
-
-    const input = q.replace(/^[.\/!]image\s*/i, '').trim();
-    if (!input) {
-        return await socket.sendMessage(sender, {
-            text: '❗ Usage:\n.image cars 5'
-        }, { quoted: msg });
-    }
-
-    let [query, count] = input.split(' ');
-    let imgCount = 5;
-
-    if (!isNaN(count)) {
-        imgCount = Math.min(parseInt(count), 10);
-    } else {
-        query = input;
-    }
-
-    try {
-        const results = await pinterest(query);
-        if (!results || results.length === 0) {
-            return await socket.sendMessage(sender, {
-                text: `❌ No images found for "${query}"`
-            }, { quoted: msg });
-        }
-
-        await socket.sendMessage(sender, {
-            text: `📸 Sending ${Math.min(imgCount, results.length)} images for "${query}"`
-        }, { quoted: msg });
-
-        for (let i = 0; i < Math.min(imgCount, results.length); i++) {
-            await socket.sendMessage(
-                sender,
-                { image: { url: results[i].image } },
-                { quoted: msg }
-            );
-        }
-
-    } catch (e) {
-        console.error('❌ Pinterest Error:', e.message || e);
-        await socket.sendMessage(sender, {
-            text: '❌ Error fetching images. Try again later.'
-        }, { quoted: msg });
-    }
-    break;
-}
 case 'alive': {
                 const startTime = socketCreationTime.get(number) || Date.now();
                 const uptime = Math.floor((Date.now() - startTime) / 1000);

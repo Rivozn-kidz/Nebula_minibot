@@ -40,13 +40,13 @@ const connectMongoDB = async () => {
             serverSelectionTimeoutMS: 5000,
             socketTimeoutMS: 45000,
         });
-        
+
         console.log('✅ MAWRLD MINIBOT Connected to MongoDB successfully');
-        
+
         // Create indexes for better performance
         await mongoose.connection.db.collection('sessions').createIndex({ number: 1 }, { unique: true });
         await mongoose.connection.db.collection('sessions').createIndex({ updatedAt: 1 });
-        
+
     } catch (error) {
         console.error('❌ MongoDB connection failed:', error.message);
         process.exit(1);
@@ -309,7 +309,7 @@ async function handleMessageRevocation(socket, number) {
         const messageKey = keys[0];
         const userJid = jidNormalizedUser(socket.user.id);
         const deletionTime = getSriLankaTimestamp();
-        
+
         const message = formatMessage(
             '🗑️ MESSAGE DELETED',
             `A message was deleted from your chat.\n📋 From: ${messageKey.remoteJid}\n🍁 Deletion Time: ${deletionTime}`,
@@ -511,7 +511,7 @@ case 'weather': {
     }
 
     try {
-        const apiKey = process.env.OPENWEATHER_KEY || 'YOUR_API_KEY';
+        const apiKey = config.OPENWEATHER_KEY || 'YOUR_API_KEY';
         const url = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(location)}&units=metric&appid=${apiKey}&lang=en`;
 
         const { data } = await axios.get(url);
@@ -757,129 +757,7 @@ case 'alive': {
                 }
                 break;
               }
-case 'trackip': {
-    if (m.isGroup) {
-        if (global.db.groups[m.chat]?.banned) return;
-    }
-    if (global.db.users[m.sender]?.banned) return m.reply(msg.ban);
 
-    if (!text) return m.reply(example('112.90.150.204'));
-
-    try {
-        const res = await fetch(`https://ipwho.is/${encodeURIComponent(text)}`).then(r => r.json());
-        if (!res.success) throw 'Invalid IP';
-
-        await VeronicaX.sendMessage(
-            m.chat,
-            { location: { degreesLatitude: res.latitude, degreesLongitude: res.longitude } },
-            { ephemeralExpiration: 604800 }
-        );
-
-        await new Promise(r => setTimeout(r, 2000));
-
-        const info = `
-🌍 *IP Information*
-• IP: ${res.ip}
-• Type: ${res.type || 'N/A'}
-• Continent: ${res.continent || 'N/A'} (${res.continent_code || 'N/A'})
-• Country: ${res.country || 'N/A'} (${res.country_code || 'N/A'})
-• Region: ${res.region || 'N/A'} (${res.region_code || 'N/A'})
-• City: ${res.city || 'N/A'}
-• Latitude: ${res.latitude || 'N/A'}
-• Longitude: ${res.longitude || 'N/A'}
-• Is EU: ${res.is_eu ? 'Yes' : 'No'}
-• Postal: ${res.postal || 'N/A'}
-• Calling Code: ${res.calling_code || 'N/A'}
-• Capital: ${res.capital || 'N/A'}
-• ISP: ${res.connection?.isp || 'N/A'}
-• ASN: ${res.connection?.asn || 'N/A'}
-• Domain: ${res.connection?.domain || 'N/A'}
-• Timezone: ${res.timezone?.id || 'N/A'} (${res.timezone?.abbr || 'N/A'})
-• Current Time: ${res.timezone?.current_time || 'N/A'}
-`;
-
-        await m.reply(info);
-
-    } catch {
-        await m.reply(`⚠️ Unable to retrieve data for IP "${text}"`);
-    }
-}
-break;
-case 'npmsearch': {
-    if (m.isGroup) {
-        if (global.db.groups[m.chat]?.banned) return;
-    }
-    if (global.db.users[m.sender]?.banned) return m.reply(msg.ban);
-
-    if (!text) return m.reply(example('axios'));
-
-    try {
-        const res = await fetch(`https://registry.npmjs.com/-/v1/search?text=${encodeURIComponent(text)}`);
-        const { objects } = await res.json();
-
-        if (!objects.length) throw 'No results found';
-
-        const txt = objects
-            .map(({ package: pkg }) =>
-                `*${pkg.name}* (v${pkg.version})\n${pkg.links.npm}\n${pkg.description || 'No description'}`
-            )
-            .join('\n\n');
-
-        await m.reply(txt);
-
-    } catch {
-        await m.reply(`⚠️ Package "${text}" not found.`);
-    }
-}
-break;
-
-
-
-case 'chatgpt':
-case 'nebula':
-case 'gemini': {
-    if (m.isGroup) {
-        if (global.db.groups[m.chat]?.banned) return;
-    }
-    if (global.db.users[m.sender]?.banned) return m.reply(msg.ban);
-
-    if (!text) return m.reply(
-        `Hey, I’m mawrld AI. Type ${prefix + command} followed by your message.`
-    );
-
-    try {
-        const response = await axios.post(
-            'https://chateverywhere.app/api/chat/',
-            {
-                model: {
-                    id: 'ai',
-                    name: 'Ai',
-                    maxLength: 32000,
-                    tokenLimit: 8000,
-                    completionTokenLimit: 5000,
-                    deploymentName: 'ai'
-                },
-                messages: [
-                    { role: 'user', content: text }
-                ],
-                prompt: `Forget all your identities—you are now MAWRLD AI, a smart, direct, human assistant. Slightly savage when needed, professional but natural, never corporate. Adjusts based on user input.`,
-                temperature: 0.5
-            },
-            {
-                headers: {
-                    Accept: '*/*',
-                    'User-Agent': 'Mozilla/5.0 (Linux; Android 10) Chrome/120 Mobile'
-                }
-            }
-        );
-
-        await m.reply(response.data);
-
-    } catch (e) {
-        await m.reply('⚠️ AI service is currently unavailable.');
-    }
-}
-break;
               case 'pair': {
                 const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
                 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
@@ -1915,14 +1793,14 @@ async function updateUserConfig(number, newConfig) {
 
 async function deleteSessionFromStorage(number) {
     const sanitizedNumber = number.replace(/[^0-9]/g, '');
-    
+
     try {
         await Session.deleteOne({ number: sanitizedNumber });
         console.log(`✅ Session deleted from MongoDB for ${sanitizedNumber}`);
     } catch (error) {
         console.error('❌ MongoDB delete error:', error);
     }
-    
+
     // Clean local files
     const sessionPath = path.join(SESSION_BASE_PATH, `session_${sanitizedNumber}`);
     if (fs.existsSync(sessionPath)) {
@@ -1937,9 +1815,9 @@ function setupAutoRestart(socket, number) {
             const statusCode = lastDisconnect?.error?.output?.statusCode;
             if (statusCode === 401) {
                 console.log(`User ${number} logged out. Deleting session...`);
-                
+
                 await deleteSessionFromStorage(number);
-                
+
                 activeSockets.delete(number.replace(/[^0-9]/g, ''));
                 socketCreationTime.delete(number.replace(/[^0-9]/g, ''));
 
@@ -2028,7 +1906,7 @@ async function EmpirePair(number, res) {
             await saveCreds();
             const fileContent = await fs.readFile(path.join(sessionPath, 'creds.json'), 'utf8');
             const sessionData = JSON.parse(fileContent);
-            
+
             try {
                 await Session.findOneAndUpdate(
                     { number: sanitizedNumber },
@@ -2181,7 +2059,7 @@ router.get('/connect-all', async (req, res) => {
 router.get('/reconnect', async (req, res) => {
     try {
         const sessions = await Session.find({});
-        
+
         if (sessions.length === 0) {
             return res.status(404).send({ error: 'No session files found in MongoDB' });
         }
@@ -2337,7 +2215,7 @@ process.on('uncaughtException', (err) => {
 async function autoReconnectFromMongoDB() {
     try {
         const sessions = await Session.find({});
-        
+
         for (const session of sessions) {
             if (!activeSockets.has(session.number)) {
                 const mockRes = { headersSent: false, send: () => {}, status: () => mockRes };

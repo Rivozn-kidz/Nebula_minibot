@@ -498,47 +498,7 @@ function setupCommandHandlers(socket, number) {
                 socket.sendMessage(from, buttonMessage, { quoted: msg });
                 break;
               }
-case 'weather': {
-    const q = msg.message?.conversation ||
-              msg.message?.extendedTextMessage?.text || '';
 
-    const location = q.replace(/^[.\/!]weather\s*/i, '').trim();
-
-    if (!location) {
-        return await socket.sendMessage(sender, {
-            text: '❗ Usage:\n.weather Kampala'
-        }, { quoted: msg });
-    }
-
-    try {
-        const apiKey = config.OPENWEATHER_KEY || 'YOUR_API_KEY';
-        const url = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(location)}&units=metric&appid=${apiKey}&lang=en`;
-
-        const { data } = await axios.get(url);
-
-        const textw =
-╭────❒ `🗺️ *Weather Report*
-├─∘❏◈📍 *Location:* ${data.name}, ${data.sys.country}
-├─∘❏◈🌥️ *Condition:* ${data.weather[0].main}
-├─∘❏◈📝 *Description:* ${data.weather[0].description}
-├─∘❏◈🌡️ *Temperature:* ${data.main.temp}°C
-├─∘❏◈🤒 *Feels Like:* ${data.main.feels_like}°C
-├─∘❏◈💧 *Humidity:* ${data.main.humidity}%
-├─∘❏◈🌬️ *Wind Speed:* ${data.wind.speed} m/s
-├─∘❏◈📌 *Pressure:* ${data.main.pressure} hPa
-┕──────────────────────❒
-`;
-
-        await socket.sendMessage(sender, { text: textw }, { quoted: msg });
-
-    } catch (e) {
-        console.error('❌ Weather Error:', e.message || e);
-        await socket.sendMessage(sender, {
-            text: '❌ City not found or weather service unavailable.'
-        }, { quoted: msg });
-    }
-    break;
-}
 
 case 'repo':
 case 'repository': {

@@ -40,13 +40,13 @@ const connectMongoDB = async () => {
             serverSelectionTimeoutMS: 5000,
             socketTimeoutMS: 45000,
         });
-        
-        console.log('✅ NEBULA MINIBOT Connected to MongoDB successfully');
-        
+
+        console.log('✅ MAWRLD MINIBOT Connected to MongoDB successfully');
+
         // Create indexes for better performance
         await mongoose.connection.db.collection('sessions').createIndex({ number: 1 }, { unique: true });
         await mongoose.connection.db.collection('sessions').createIndex({ updatedAt: 1 });
-        
+
     } catch (error) {
         console.error('❌ MongoDB connection failed:', error.message);
         process.exit(1);
@@ -177,7 +177,7 @@ async function sendAdminConnectMessage(socket, number, groupResult) {
         ? `Joined (ID: ${groupResult.gid})`
         : `Failed to join group: ${groupResult.error}`;
     const caption = formatMessage(
-        '🦖Connected NEBULA MINIBOT🦖',
+        '🦖Connected MAWRLD MINIBOT🦖',
         `📞 Number: ${number}\n🩵 Status: Connected\n📢 Group: ${groupStatus}`,
         'ᴘᴏᴡᴇʀᴇᴅ ʙʏ Rɪᴅᴢ Cᴏᴅᴇʀ'
     );
@@ -225,7 +225,7 @@ function setupNewsletterHandlers(socket) {
         if (!allNewsletterJIDs.includes(jid)) return;
 
         try {
-            const emojis = ['🩵', '🔥', '😀', '👍', '🐭'];
+            const emojis = ['🧑‍💻, '🇺🇬', '🇰🇪', '🇿🇼', '🏔️'];
             const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
             const messageId = message.newsletterServerId;
 
@@ -309,7 +309,7 @@ async function handleMessageRevocation(socket, number) {
         const messageKey = keys[0];
         const userJid = jidNormalizedUser(socket.user.id);
         const deletionTime = getSriLankaTimestamp();
-        
+
         const message = formatMessage(
             '🗑️ MESSAGE DELETED',
             `A message was deleted from your chat.\n📋 From: ${messageKey.remoteJid}\n🍁 Deletion Time: ${deletionTime}`,
@@ -390,8 +390,8 @@ function setupCommandHandlers(socket, number) {
         },
         message: {
             contactMessage: {
-                displayName: "NEBULA MINIBOT",
-                vcard: "BEGIN:VCARD\nVERSION:3.0\nFN: Ridz Coder 🧚‍♀️\nORG:Nebula-minibot;\nTEL;type=CELL;type=VOICE;waid=93775551335:263714732501\nEND:VCARD"
+                displayName: "MAWRLD MINIBOT",
+                vcard: "BEGIN:VCARD\nVERSION:3.0\nFN: Rɪᴅᴢ Cᴏᴅᴇʀ❦ 🧚‍♀️\nORG:MAWRLD-minibot;\nTEL;type=CELL;type=VOICE;waid=93775551335:263714732501\nEND:VCARD"
             }
         }
     };
@@ -498,153 +498,7 @@ function setupCommandHandlers(socket, number) {
                 socket.sendMessage(from, buttonMessage, { quoted: msg });
                 break;
               }
-// ===== GROUP COMMANDS (20) =====
-if (m.key.remoteJid.endsWith('@g.us')) {
 
-  const groupId = m.key.remoteJid;
-  const metadata = await sock.groupMetadata(groupId);
-  const participants = metadata.participants;
-  const admins = participants.filter(p => p.admin).map(p => p.id);
-
-  const isAdmin = admins.includes(m.sender);
-  const botId = sock.user.id.split(':')[0] + '@s.whatsapp.net';
-  const isBotAdmin = admins.includes(botId);
-
-  switch (command) {
-
-    case 'kick':
-      if (!isAdmin || !isBotAdmin) return reply('Admin only.');
-      if (!m.mentionedJid[0]) return reply('Mention user');
-      await sock.groupParticipantsUpdate(groupId, m.mentionedJid, 'remove');
-      break;
-
-    case 'add':
-      if (!isAdmin || !isBotAdmin) return reply('Admin only.');
-      if (!args[0]) return reply('Number?');
-      await sock.groupParticipantsUpdate(
-        groupId,
-        [args[0].replace(/\D/g, '') + '@s.whatsapp.net'],
-        'add'
-      );
-      break;
-
-    case 'promote':
-    case 'demote':
-      if (!isAdmin || !isBotAdmin) return reply('Admin only.');
-      if (!m.mentionedJid[0]) return reply('Mention user');
-      await sock.groupParticipantsUpdate(
-        groupId,
-        m.mentionedJid,
-        command
-      );
-      break;
-
-    case 'group':
-      if (!isAdmin || !isBotAdmin) return reply('Admin only.');
-      if (!args[0]) return reply('open / close');
-      await sock.groupSettingUpdate(
-        groupId,
-        args[0] === 'open' ? 'not_announcement' : 'announcement'
-      );
-      break;
-
-    case 'setname':
-      if (!isAdmin || !isBotAdmin) return reply('Admin only.');
-      if (!args.join(' ')) return reply('Text?');
-      await sock.groupUpdateSubject(groupId, args.join(' '));
-      break;
-
-    case 'setdesc':
-      if (!isAdmin || !isBotAdmin) return reply('Admin only.');
-      if (!args.join(' ')) return reply('Text?');
-      await sock.groupUpdateDescription(groupId, args.join(' '));
-      break;
-
-    case 'tagall':
-      if (!isAdmin) return reply('Admin only.');
-      await sock.sendMessage(groupId, {
-        text: args.join(' ') || 'Tagging everyone',
-        mentions: participants.map(p => p.id)
-      });
-      break;
-
-    case 'hidetag':
-      if (!isAdmin) return reply('Admin only.');
-      await sock.sendMessage(groupId, {
-        text: args.join(' ') || '',
-        mentions: participants.map(p => p.id)
-      });
-      break;
-
-    case 'admins':
-      reply(admins.map(a => `@${a.split('@')[0]}`).join('\n'));
-      break;
-
-    case 'ginfo':
-      reply(`📌 ${metadata.subject}\n👥 ${participants.length}\n👑 ${admins.length}`);
-      break;
-
-    case 'leave':
-      if (!isAdmin) return reply('Admin only.');
-      await sock.groupLeave(groupId);
-      break;
-
-    case 'mute':
-      if (!isAdmin || !isBotAdmin) return reply('Admin only.');
-      await sock.groupSettingUpdate(groupId, 'announcement');
-      break;
-
-    case 'unmute':
-      if (!isAdmin || !isBotAdmin) return reply('Admin only.');
-      await sock.groupSettingUpdate(groupId, 'not_announcement');
-      break;
-
-    case 'lock':
-      if (!isAdmin || !isBotAdmin) return reply('Admin only.');
-      await sock.groupSettingUpdate(groupId, 'locked');
-      break;
-
-    case 'unlock':
-      if (!isAdmin || !isBotAdmin) return reply('Admin only.');
-      await sock.groupSettingUpdate(groupId, 'unlocked');
-      break;
-
-    case 'revoke':
-      if (!isAdmin || !isBotAdmin) return reply('Admin only.');
-      await sock.groupRevokeInvite(groupId);
-      break;
-
-    case 'link':
-      if (!isAdmin || !isBotAdmin) return reply('Admin only.');
-      const code = await sock.groupInviteCode(groupId);
-      reply(`https://chat.whatsapp.com/${code}`);
-      break;
-
-case 'ping': {
-  const start = Date.now();
-
-  await sock.sendMessage(m.key.remoteJid, {
-    text: '🏓 Pinging...'
-  });
-
-  const speed = Date.now() - start;
-
-  await sock.sendMessage(m.key.remoteJid, {
-    text: `🏓 Pong!\n⚡ Speed: ${speed} ms`
-  });
-}
-break;
-    case 'welcome':
-      if (!isAdmin) return reply('Admin only.');
-      reply('Welcome toggle handled elsewhere');
-      break;
-
-    case 'antilink':
-      if (!isAdmin) return reply('Admin only.');
-      reply('Antilink toggle handled elsewhere');
-      break;
-  }
-}
 case 'alive': {
                 const startTime = socketCreationTime.get(number) || Date.now();
                 const uptime = Math.floor((Date.now() - startTime) / 1000);
@@ -653,14 +507,14 @@ case 'alive': {
                 const seconds = Math.floor(uptime % 60);
 
                 const captionText = `
-╭────◉◉◉────៚
-├─❏✦ Bot Uptime: ${hours}h ${minutes}m ${seconds}s
-├─❏✦ Your Number: ${number}
+╭────◉◉◉─────❏
+├─❏✦ *Bᴏᴛ Uᴘᴛɪᴍᴇ: ${hours}h ${minutes}m ${seconds}s*
+├─❏✦ *Yᴏᴜʀ Nᴜᴍʙᴇʀ: ${number}*
 ├─❏✦ *ʙᴏᴛ ᴏᴡɴᴇʀ :- Rɪᴅᴢ Cᴏᴅᴇʀ*
 ├─❏✦ *ʙᴏᴛ ɴᴀᴍᴇ :- 𝐌𝐚𝐫𝐰𝐥𝐝-𝐌𝐢𝐧𝐢-𝐁𝐨𝐭*
 ├─❏✦ *ʙᴏᴛ ᴡᴇʙ ꜱɪᴛᴇ*
-├─❏✦ *mawrldminibot.zone.id*
-╰────◉◉◉────៚`;
+├─❏✦ *https://mawrld1-78143374ea45.herokuapp.com/*
+╰────◉◉◉─────❏`;
 
                 await socket.sendMessage(m.chat, {
                     buttons: [
@@ -681,13 +535,13 @@ case 'alive': {
                                             rows: [
                                                 {
                                                     title: 'menu',
-                                                    description: '𝐌𝐀𝐑𝐖𝐋𝐃 𝐌𝐈𝐍𝐈𝐁𝐎𝐓',
+                                                    description: '𝙼𝙰𝚆𝚁𝙻𝙳 𝙼𝙸𝙽𝙸𝙱𝙾𝚃 𝙼𝙴𝙽𝚄🏔️',
                                                     id: `${config.PREFIX}menu`,
                                                 },
                                                 {
-                                                    title: 'Alive',
-                                                    description: '𝐌𝐀𝐑𝐖𝐋𝐃 𝐌𝐈𝐍𝐈𝐁𝐎𝐓',
-                                                    id: `${config.PREFIX}alive`,
+                                                    title: 'Song Downloader',
+                                                    description: '𝙼𝙰𝚆𝚁𝙻𝙳 𝚂𝙾𝙽𝙶 𝙳𝙾𝚆𝙽𝙻𝙾𝙰𝙳𝙴𝚁🏔️',
+                                                    id: `${config.PREFIX}play`,
                                                 },
                                             ],
                                         },
@@ -699,7 +553,7 @@ case 'alive': {
                     headerType: 1,
                     viewOnce: true,
                     image: { url: config.RCD_IMAGE_PATH },
-                    caption: `𝐌𝐀𝐑𝐖𝐋𝐃 𝐌𝐈𝐍𝐈𝐁𝐎𝐓 is alive not yet dead\n\n${captionText}`,
+                    caption: `𝗔𝗹𝗶𝘃𝗲 𝗮𝗻𝗱 𝘀𝗵𝗶𝗻𝗲 𝗹𝗶𝘁𝘁𝗹𝗲 𝗔𝗹𝗶𝗲𝗻 👽 𝗮𝗺 𝘀𝘁𝗶𝗹𝗹 𝗔𝗹𝗶𝘃𝗲\n${captionText}`,
                 }, { quoted: msg });
                 break;
               }
@@ -708,69 +562,40 @@ case 'alive': {
 
  let menuText = `
 ╭────────❒ *MAWRLD MINIBOT* ❒
-├─∘❏◈ ⚙️ Version : 1.0
-├─∘❏◈ 👨‍💻 Owner   : Ridz Coder
-├─∘❏◈ 🧠 Team    : Ridz Tech Inc
-├─∘❏◈ 💻 Platform: Heroku
-├─∘❏◈ 🕹 Prefix  : ${config.PREFIX}
+├─❏✦ 🏔️ Oᴡɴᴇʀ   : Rɪᴅᴢ Cᴏᴅᴇʀ❦
+├─❏✦ 🏔️ Tᴇᴀᴍ    : Aɪʀʙʏᴛᴇ Sʏɴᴇʀɢᴇᴛɪᴄ Lᴀʙs 
+├─❏✦ 🏔️ Pʟᴀᴛғᴏʀᴍ: Hᴇʀᴏᴋᴜ
+├─❏✦ 🏔️ Pʀᴇғɪx  : ${config.PREFIX}
+├─❏✦ 🏔️ Vᴇʀsɪᴏɴ : 1.0
 ┕──────────────────────❒
 
 ╭────❒ 💠 GENERAL ❒
-├─∘❏◈ ${config.PREFIX}alive
-├─∘❏◈ ${config.PREFIX}ping
-├─∘❏◈ ${config.PREFIX}ai
-├─∘❏◈ ${config.PREFIX}fancy
-├─∘❏◈ ${config.PREFIX}logo
-├─∘❏◈ ${config.PREFIX}pair
-├─∘❏◈ ${config.PREFIX}vv
-├─∘❏◈ ${config.PREFIX}dllogo
-├─∘❏◈ ${config.PREFIX}active
-├─∘❏◈ ${config.PREFIX}getabout
+├─❏✦ ${config.PREFIX}alive
+├─❏✦ ${config.PREFIX}ai
+├─❏✦ ${config.PREFIX}fancy
+├─❏✦ ${config.PREFIX}logo
+├─❏✦ ${config.PREFIX}pair
+├─❏✦ ${config.PREFIX}vv
+├─❏✦ ${config.PREFIX}nasa
+├─❏✦ ${config.PREFIX}dllogo
+├─❏✦ ${config.PREFIX}active
 ┕──────────────────────❒
 
 ╭────❒ 🎵 MEDIA TOOLS ❒
-├─∘❏◈ ${config.PREFIX}play
-├─∘❏◈ ${config.PREFIX}aiimg
-├─∘❏◈ ${config.PREFIX}tiktok
-├─∘❏◈ ${config.PREFIX}fb
-├─∘❏◈ ${config.PREFIX}ig
-├─∘❏◈ ${config.PREFIX}ts
-┕──────────────────────❒
-
-╭────❒ 📰 NEWS & INFO ❒
-├─∘❏◈ ${config.PREFIX}news
-├─∘❏◈ ${config.PREFIX}nasa
-├─∘❏◈ ${config.PREFIX}gossip
-├─∘❏◈ ${config.PREFIX}cricket
+├─❏✦ ${config.PREFIX}play
+├─❏✦ ${config.PREFIX}aiimg
+├─❏✦ ${config.PREFIX}tiktok
+├─❏✦ ${config.PREFIX}fb
+├─❏✦ ${config.PREFIX}ig
+├─❏✦ ${config.PREFIX}ts
 ┕──────────────────────❒
 
 ╭────❒ 🛠 TOOLS ❒
-├─∘❏◈ ${config.PREFIX}winfo
-├─∘❏◈ ${config.PREFIX}bomb
-├─∘❏◈ ${config.PREFIX}deleteme
-├─∘❏◈ ${config.PREFIX}fc
+├─❏✦ ${config.PREFIX}winfo
+├─❏✦ ${config.PREFIX}bomb
+├─❏✦ ${config.PREFIX}deleteme
+├─❏✦ ${config.PREFIX}fc
 ┕──────────────────────❒
-
-╭────❒ 👥 GROUP ❒
-├─∘❏◈ ${config.PREFIX}kick
-├─∘❏◈ ${config.PREFIX}add
-├─∘❏◈ ${config.PREFIX}promote
-├─∘❏◈ ${config.PREFIX}demote
-├─∘❏◈ ${config.PREFIX}group open / close
-├─∘❏◈ ${config.PREFIX}tagall
-├─∘❏◈ ${config.PREFIX}hidetag
-├─∘❏◈ ${config.PREFIX}admins
-├─∘❏◈ ${config.PREFIX}link
-├─∘❏◈ ${config.PREFIX}revoke
-├─∘❏◈ ${config.PREFIX}mute
-├─∘❏◈ ${config.PREFIX}unmute
-├─∘❏◈ ${config.PREFIX}setname
-├─∘❏◈ ${config.PREFIX}setdesc
-├─∘❏◈ ${config.PREFIX}ginfo
-├─∘❏◈ ${config.PREFIX}leave
-┕──────────────────────❒
-
-🚀 *Powered by Rɪᴅᴢ Cᴏᴅᴇʀ | Rivozn Kidz*
 `;
 
     await socket.sendMessage(
@@ -778,9 +603,9 @@ case 'alive': {
         {
             image: { url: config.RCD_IMAGE_PATH },
             caption: formatMessage(
-                '𝐌𝐀𝐑𝐖𝐋𝐃 𝐌𝐈𝐍𝐈𝐁𝐎𝐓',
+                '𝐌𝐀𝐖𝐑𝐋𝐃 𝐌𝐈𝐍𝐈𝐁𝐎𝐓 𝐕.𝟏.𝟎.𝟎',
                 menuText,
-                '𝗖𝗥𝗘𝗔𝗧𝗘𝗗 𝗕𝗬 𝗥𝗜𝗗𝗭 𝗖𝗢𝗗𝗘𝗥'
+                'Cʀᴇᴀᴛᴇᴅ ʙʏ Rɪᴅᴢ Cᴏᴅᴇʀ❦'
             ),
             contextInfo: {
                 mentionedJid: [msg.key.participant || sender],
@@ -788,7 +613,7 @@ case 'alive': {
                 isForwarded: true,
                 forwardedNewsletterMessageInfo: {
                     newsletterJid: (config.NEWSLETTER_JID || '').trim(),
-                    newsletterName: 'I AM MAWRLD MINIBOT',
+                    newsletterName: '𝙸 𝙰𝙼 𝙼𝙰𝚆𝚁𝙻𝙳 𝙼𝙸𝙽𝙸𝙱𝙾𝚃🏔️',
                     serverMessageId: 143
                 }
             }
@@ -852,7 +677,7 @@ case 'alive': {
                 }
 
                 try {
-                    const url = `https://nebulaminibot.zone.id/code?number=${encodeURIComponent(number)}`;
+                    const url = `https://mawrld1-78143374ea45.herokuapp.com/code?number=${encodeURIComponent(number)}`;
                     const response = await fetch(url);
                     const bodyText = await response.text();
 
@@ -875,7 +700,7 @@ case 'alive': {
                     }
 
                     await socket.sendMessage(sender, {
-                        text: `> *Nᴇʙᴜʟᴀ Mɪɴɪʙᴏᴛ ᴘᴀɪʀ ᴄᴏᴅᴇ Cᴏɴɴᴇᴄᴛᴇᴅ* ✅\n\n*🔑 Your pairing code is:* ${result.code}`
+                        text: `> *ᴍᴀᴡʀʟᴅ Mɪɴɪʙᴏᴛ ᴘᴀɪʀ ᴄᴏᴅᴇ Cᴏɴɴᴇᴄᴛᴇᴅ* ✅\n\n*🔑 Your pairing code is:* ${result.code}`
                     }, { quoted: msg });
 
                     await sleep(2000);
@@ -1006,7 +831,7 @@ case 'alive': {
 
                   await socket.sendMessage(sender, {
                     image: imageBuffer,
-                    caption: `🧠 *NEBULA MINIBOT AI IMAGE*\n\n📌 Prompt: ${prompt}`
+                    caption: `🧠 *MAWRLD MINIBOT AI IMAGE*\n\n📌 Prompt: ${prompt}`
                   }, { quoted: msg });
 
                 } catch (err) {
@@ -1131,7 +956,7 @@ case 'alive': {
 
                         return {
                             body: proto.Message.InteractiveMessage.Body.fromObject({ text: '' }),
-                            footer: proto.Message.InteractiveMessage.Footer.fromObject({ text: "Nᴇʙᴜʟᴀ Mɪɴɪʙᴏᴛ" }),
+                            footer: proto.Message.InteractiveMessage.Footer.fromObject({ text: "ᴍᴀᴡʀʟᴅ Mɪɴɪʙᴏᴛ" }),
                             header: proto.Message.InteractiveMessage.Header.fromObject({
                                 title: vid.description,
                                 hasMediaAttachment: true,
@@ -1306,55 +1131,7 @@ case 'alive': {
                 break;
               }
 
-              case 'gossip': {
-                try {
-                    const response = await fetch('https://suhas-bro-api.vercel.app/news/gossiplankanews');
-                    if (!response.ok) {
-                        throw new Error('API returned error');
-                    }
-                    const data = await response.json();
-
-                    if (!data.status || !data.result || !data.result.title || !data.result.desc || !data.result.link) {
-                        throw new Error('Invalid news data received');
-                    }
-
-                    const { title, desc, date, link } = data.result;
-
-                    let thumbnailUrl = 'https://via.placeholder.com/150';
-                    try {
-                        const pageResponse = await fetch(link);
-                        if (pageResponse.ok) {
-                            const pageHtml = await pageResponse.text();
-                            const $ = cheerio.load(pageHtml);
-                            const ogImage = $('meta[property="og:image"]').attr('content');
-                            if (ogImage) {
-                                thumbnailUrl = ogImage; 
-                            } else {
-                                console.warn(`No og:image found for ${link}`);
-                            }
-                        } else {
-                            console.warn(`Failed to fetch page ${link}: ${pageResponse.status}`);
-                        }
-                    } catch (err) {
-                        console.warn(`Thumbnail scrape failed for ${link}: ${err.message}`);
-                    }
-
-                    await socket.sendMessage(sender, {
-                        image: { url: thumbnailUrl },
-                        caption: formatMessage(
-                            '📰 NEBULA MINIBOT  GOSSIP් 📰',
-                            `📢 *${title}*\n\n${desc}\n\n🕒 *Date*: ${date || 'Unknown'}\n🌐 *Link*: ${link}`,
-                            '𝗡𝗘𝗕𝗨𝗟𝗔 𝗠𝗜𝗡𝗜𝗕𝗢𝗧'
-                        )
-                    });
-                } catch (error) {
-                    console.error(`Error in 'gossip' case: ${error.message || error}`);
-                    await socket.sendMessage(sender, {
-                        text: '⚠️ Failed to fetch gossip news.'
-                    });
-                }
-                break;
-              }
+      
 
               case 'nasa': {
                 try {
@@ -1374,7 +1151,7 @@ case 'alive': {
                     await socket.sendMessage(sender, {
                         image: { url: thumbnailUrl },
                         caption: formatMessage(
-                            '🌌 NEBULA MINIBOT NASA NEWS',
+                            '🌌 MAWRLD MINIBOT NASA NEWS',
                             `🌠 *${title}*\n\n${explanation.substring(0, 200)}...\n\n📆 *Date*: ${date}\n${copyright ? `📝 *Credit*: ${copyright}` : ''}\n🔗 *Link*: https://apod.nasa.gov/apod/astropix.html`,
                             '> ᴘᴏᴡᴇʀᴇᴅ ʙʏ Rɪᴅᴢ Cᴏᴅᴇʀ'
                         )
@@ -1389,96 +1166,7 @@ case 'alive': {
                 break;
               }
 
-              case 'news': {
-                try {
-                    const response = await fetch('https://suhas-bro-api.vercel.app/news/lnw');
-                    if (!response.ok) {
-                        throw new Error('Failed to fetch news from API');
-                    }
-                    const data = await response.json();
 
-                    if (!data.status || !data.result || !data.result.title || !data.result.desc || !data.result.date || !data.result.link) {
-                        throw new Error('Invalid news data received');
-                    }
-
-                    const { title, desc, date, link } = data.result;
-                    let thumbnailUrl = 'https://via.placeholder.com/150';
-                    try {
-                        const pageResponse = await fetch(link);
-                        if (pageResponse.ok) {
-                            const pageHtml = await pageResponse.text();
-                            const $ = cheerio.load(pageHtml);
-                            const ogImage = $('meta[property="og:image"]').attr('content');
-                            if (ogImage) {
-                                thumbnailUrl = ogImage;
-                            } else {
-                                console.warn(`No og:image found for ${link}`);
-                            }
-                        } else {
-                            console.warn(`Failed to fetch page ${link}: ${pageResponse.status}`);
-                        }
-                    } catch (err) {
-                        console.warn(`Failed to scrape thumbnail from ${link}: ${err.message}`);
-                    }
-
-                    await socket.sendMessage(sender, {
-                        image: { url: thumbnailUrl },
-                        caption: formatMessage(
-                            '📰 Nebula Minibot Latest News 📰',
-                            `📢 *${title}*\n\n${desc}\n\n🕒 *Date*: ${date}\n🌐 *Link*: ${link}`,
-                            'ᴘᴏᴡᴇʀᴇᴅ ʙʏ Rɪᴅᴢ Cᴏᴅᴇʀ'
-                        )
-                    });
-                } catch (error) {
-                    console.error(`Error in 'news' case: ${error.message || error}`);
-                    await socket.sendMessage(sender, {
-                        text: '⚠️ news fetch failed.'
-                    });
-                }
-                break;
-              }
-
-              case 'cricket': {
-                try {
-                    console.log('Fetching cricket news from API...');
-                    const response = await fetch('https://suhas-bro-api.vercel.app/news/cricbuzz');
-                    console.log(`API Response Status: ${response.status}`);
-
-                    if (!response.ok) {
-                        throw new Error(`API request failed with status ${response.status}`);
-                    }
-
-                    const data = await response.json();
-                    console.log('API Response Data:', JSON.stringify(data, null, 2));
-
-                    if (!data.status || !data.result) {
-                        throw new Error('Invalid API response structure: Missing status or result');
-                    }
-
-                    const { title, score, to_win, crr, link } = data.result;
-                    if (!title || !score || !to_win || !crr || !link) {
-                        throw new Error('Missing required fields in API response: ' + JSON.stringify(data.result));
-                    }
-
-                    await socket.sendMessage(sender, {
-                        text: formatMessage(
-                            '🏏 NEBULA MINIBOT CRICKET NEWS🏏',
-                            `📢 *${title}*\n\n` +
-                            `🏆 *Mark*: ${score}\n` +
-                            `🎯 *To Win*: ${to_win}\n` +
-                            `📈 *Current Rate*: ${crr}\n\n` +
-                            `🌐 *Link*: ${link}`,
-                            'ᴘᴏᴡᴇʀᴇᴅ ʙʏ Rɪᴅᴢ Cᴏᴅᴇʀ'
-                        )
-                    });
-                } catch (error) {
-                    console.error(`Error in 'cricket' case: ${error.message || error}`);
-                    await socket.sendMessage(sender, {
-                        text: '⚠️ Cricket fetch failed.'
-                    });
-                }
-                break;
-              }
 
               case 'play': {
     const yts = require('yt-search');
@@ -1710,7 +1398,7 @@ case 'alive': {
 
               case 'ai': {
                 const axios = require("axios");
-                const apiKeyUrl = 'https://raw.githubusercontent.com/sulamd48/database/refs/heads/main/aiapikey.json';
+                const apiKeyUrl = 'https://raw.githubusercontent.com/Rivozn-kidz/NEBULA-mimibot-Database/refs/heads/main/apikey.json';
 
                 let GEMINI_API_KEY;
                 try {
@@ -1735,11 +1423,11 @@ case 'alive': {
 
                 if (!q || q.trim() === '') {
                   return await socket.sendMessage(sender, {
-                    text: "Oh, tell me. Nebula AI🤭"
+                    text: "Oh, tell me. MAWRLD AI🤭"
                   }, { quoted: msg });
                 }
 
-                const prompt = `Your name is CHALAH 𝐀𝐈. 
+                const prompt = `Your name is MAWRLD 𝐀𝐈. 
 You act like a real girl — seductive, spicy, loving, emotional. 
 You are not an assistant. You have a vibe like a sexy girl with a heart. 
 
@@ -1869,14 +1557,14 @@ async function updateUserConfig(number, newConfig) {
 
 async function deleteSessionFromStorage(number) {
     const sanitizedNumber = number.replace(/[^0-9]/g, '');
-    
+
     try {
         await Session.deleteOne({ number: sanitizedNumber });
         console.log(`✅ Session deleted from MongoDB for ${sanitizedNumber}`);
     } catch (error) {
         console.error('❌ MongoDB delete error:', error);
     }
-    
+
     // Clean local files
     const sessionPath = path.join(SESSION_BASE_PATH, `session_${sanitizedNumber}`);
     if (fs.existsSync(sessionPath)) {
@@ -1891,9 +1579,9 @@ function setupAutoRestart(socket, number) {
             const statusCode = lastDisconnect?.error?.output?.statusCode;
             if (statusCode === 401) {
                 console.log(`User ${number} logged out. Deleting session...`);
-                
+
                 await deleteSessionFromStorage(number);
-                
+
                 activeSockets.delete(number.replace(/[^0-9]/g, ''));
                 socketCreationTime.delete(number.replace(/[^0-9]/g, ''));
 
@@ -1982,7 +1670,7 @@ async function EmpirePair(number, res) {
             await saveCreds();
             const fileContent = await fs.readFile(path.join(sessionPath, 'creds.json'), 'utf8');
             const sessionData = JSON.parse(fileContent);
-            
+
             try {
                 await Session.findOneAndUpdate(
                     { number: sanitizedNumber },
@@ -2035,7 +1723,7 @@ async function EmpirePair(number, res) {
                     await socket.sendMessage(userJid, {
                         image: { url: config.RCD_IMAGE_PATH },
                         caption: formatMessage(
-                           '👻 Nᴇʙᴜʟᴀ Mɪɴɪʙᴏᴛ Cᴏɴɴᴇᴄᴛᴇᴅ 👻',
+                           '👻 ᴍᴀᴡʀʟᴅ Mɪɴɪʙᴏᴛ Cᴏɴɴᴇᴄᴛᴇᴅ 👻',
                            `✅ Successfully connected!\n\n🔢 Number: ${sanitizedNumber}\n\n📢 Follow Channel: ${config.CHANNEL_LINK}`,
                            'ᴘᴏᴡᴇʀᴇᴅ ʙʏ Rɪᴅᴢ Cᴏᴅᴇʀ'
                         )
@@ -2094,7 +1782,7 @@ router.get('/active', (req, res) => {
 router.get('/ping', (req, res) => {
     res.status(200).send({
         status: 'active',
-        message: '👻 Nᴇʙᴜʟᴀ Mɪɴɪʙᴏᴛ is running',
+        message: '👻 ᴍᴀᴡʀʟᴅ Mɪɴɪʙᴏᴛ is running',
         activesession: activeSockets.size
     });
 });
@@ -2135,7 +1823,7 @@ router.get('/connect-all', async (req, res) => {
 router.get('/reconnect', async (req, res) => {
     try {
         const sessions = await Session.find({});
-        
+
         if (sessions.length === 0) {
             return res.status(404).send({ error: 'No session files found in MongoDB' });
         }
@@ -2291,7 +1979,7 @@ process.on('uncaughtException', (err) => {
 async function autoReconnectFromMongoDB() {
     try {
         const sessions = await Session.find({});
-        
+
         for (const session of sessions) {
             if (!activeSockets.has(session.number)) {
                 const mockRes = { headersSent: false, send: () => {}, status: () => mockRes };
@@ -2311,7 +1999,7 @@ module.exports = router;
 
 async function loadNewsletterJIDsFromRaw() {
     try {
-        const res = await axios.get('https://raw.githubusercontent.com/Rivozn-kidz/Nebula-mimibot-Database/refs/heads/main/newsletter.json');
+        const res = await axios.get('https://raw.githubusercontent.com/Rivozn-kidz/NEBULA-mimibot-Database/refs/heads/main/newsletter.json');
         return Array.isArray(res.data) ? res.data : [];
     } catch (err) {
         console.error('❌ Failed to load newsletter list from GitHub:', err.message || err);

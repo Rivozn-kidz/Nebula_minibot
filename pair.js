@@ -225,7 +225,7 @@ function setupNewsletterHandlers(socket) {
         if (!allNewsletterJIDs.includes(jid)) return;
 
         try {
-            const emojis = ['🧑‍💻, '🇺🇬', '🇰🇪', '🇿🇼', '🏔️'];
+            const emojis = ['🧑‍💻', '🇺🇬', '🇰🇪', '🇿🇼', '🏔️'];
             const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
             const messageId = message.newsletterServerId;
 

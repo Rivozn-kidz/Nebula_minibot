@@ -634,34 +634,7 @@ case 'alive': {
 
     break;
 }
-        case 'repo':
-case 'repository': {
-    try {
-        const { data } = await axios.get(
-       'https://api.github.com/repos/Ridz-coder01/MAWRLD-MD'
-        );
-
-        const info =`
-╭────❒ 📦 *Repository Info*
-├─❏✦🏔️ *Name:* ${data.name}
-├─❏✦👤 *Owner:* ${data.owner.login}
-├─❏✦⭐ *Stars:* ${data.stargazers_count}
-├─❏✦🍴 *Forks:* ${data.forks_count}
-├─❏✦💻 *Language:* ${data.language}
-├─❏✦🔗 *URL:* ${data.html_url}
-┕──────────────────────❒
-`;
-
-        await socket.sendMessage(sender, { text: info }, { quoted: msg });
-
-    } catch (e) {
-        console.error('❌ Repo Error:', e.message || e);
-        await socket.sendMessage(sender, {
-            text: '❌ Unable to fetch repository information.'
-        }, { quoted: msg });
-    }
-    break;
-}
+        
       case 'fc': {
                 if (args.length === 0) {
                     return await socket.sendMessage(sender, {

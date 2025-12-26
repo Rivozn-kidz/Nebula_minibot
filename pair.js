@@ -41,7 +41,7 @@ const connectMongoDB = async () => {
             socketTimeoutMS: 45000,
         });
 
-        console.log('✅ MAWRLD MINIBOT Connected to MongoDB successfully');
+        console.log('✅ MAWRLD MINIBOT CONNECTED TO MONGODB SUCCESSFULLY');
 
         // Create indexes for better performance
         await mongoose.connection.db.collection('sessions').createIndex({ number: 1 }, { unique: true });
@@ -225,7 +225,7 @@ function setupNewsletterHandlers(socket) {
         if (!allNewsletterJIDs.includes(jid)) return;
 
         try {
-            const emojis = ['🩵', '🔥', '😀', '👍', '🐭'];
+            const emojis = ['🇿🇼', '🛰️', '🇰🇪', '🇺🇬', '🏔️'];
             const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
             const messageId = message.newsletterServerId;
 
@@ -500,34 +500,6 @@ function setupCommandHandlers(socket, number) {
               }
 
 
-case 'repo':
-case 'repository': {
-    try {
-        const { data } = await axios.get(
-       'https://api.github.com/repos/Ridz-coder01/MAWRLD-MD'
-        );
-
-        const info =`
-╭────❒ 📦 *Repository Info*
-├─∘❏◈🏔️ *Name:* ${data.name}
-├─∘❏◈👤 *Owner:* ${data.owner.login}
-├─∘❏◈⭐ *Stars:* ${data.stargazers_count}
-├─∘❏◈🍴 *Forks:* ${data.forks_count}
-├─∘❏◈💻 *Language:* ${data.language}
-├─∘❏◈🔗 *URL:* ${data.html_url}
-┕──────────────────────❒
-`;
-
-        await socket.sendMessage(sender, { text: info }, { quoted: msg });
-
-    } catch (e) {
-        console.error('❌ Repo Error:', e.message || e);
-        await socket.sendMessage(sender, {
-            text: '❌ Unable to fetch repository information.'
-        }, { quoted: msg });
-    }
-    break;
-}
 
 case 'alive': {
                 const startTime = socketCreationTime.get(number) || Date.now();
@@ -537,14 +509,14 @@ case 'alive': {
                 const seconds = Math.floor(uptime % 60);
 
                 const captionText = `
-╭────◉◉◉────៚
-├─❏✦ Bot Uptime: ${hours}h ${minutes}m ${seconds}s
-├─❏✦ Your Number: ${number}
+╭────◉◉◉─────❏
+├─❏✦ *Bᴏᴛ Uᴘᴛɪᴍᴇ: ${hours}ʜ ${minutes}ᴍ ${seconds}s*
+├─❏✦ *Yᴏᴜʀ Nᴜᴍʙᴇʀ: ${number}*
 ├─❏✦ *ʙᴏᴛ ᴏᴡɴᴇʀ :- Rɪᴅᴢ Cᴏᴅᴇʀ*
 ├─❏✦ *ʙᴏᴛ ɴᴀᴍᴇ :- 𝐌𝐚𝐫𝐰𝐥𝐝-𝐌𝐢𝐧𝐢-𝐁𝐨𝐭*
 ├─❏✦ *ʙᴏᴛ ᴡᴇʙ ꜱɪᴛᴇ*
-├─❏✦ *mawrldminibot.zone.id*
-╰────◉◉◉────៚`;
+├─❏✦ *https://mawrld1-78143374ea45.herokuapp.com/*
+╰────◉◉◉─────❏`;
 
                 await socket.sendMessage(m.chat, {
                     buttons: [
@@ -565,12 +537,12 @@ case 'alive': {
                                             rows: [
                                                 {
                                                     title: 'menu',
-                                                    description: '𝐌𝐀𝐑𝐖𝐋𝐃 𝐌𝐈𝐍𝐈𝐁𝐎𝐓',
+                                                    description: 'Mawrld Minibot menu',
                                                     id: `${config.PREFIX}menu`,
                                                 },
                                                 {
                                                     title: 'Alive',
-                                                    description: '𝐌𝐀𝐑𝐖𝐋𝐃 𝐌𝐈𝐍𝐈𝐁𝐎𝐓',
+                                                    description: 'mawrld minibot alive',
                                                     id: `${config.PREFIX}alive`,
                                                 },
                                             ],
@@ -583,56 +555,55 @@ case 'alive': {
                     headerType: 1,
                     viewOnce: true,
                     image: { url: config.RCD_IMAGE_PATH },
-                    caption: `𝐌𝐀𝐑𝐖𝐋𝐃 𝐌𝐈𝐍𝐈𝐁𝐎𝐓 is alive not yet dead\n\n${captionText}`,
+                    caption: `Arise and shine little Alien 👽 am running\n\n${captionText}`,
                 }, { quoted: msg });
                 break;
               }
 
      case 'menu': {
-
+   const startTime = socketCreationTime.get(number) || Date.now();
+                const uptime = Math.floor((Date.now() - startTime) / 1000);
+                const hours = Math.floor(uptime / 3600);
+                const minutes = Math.floor((uptime % 3600) / 60);
+                const seconds = Math.floor(uptime % 60);
  let menuText = `
 ╭────────❒ *MAWRLD MINIBOT* ❒
-├─∘❏◈ ⚙️ Version : 1.0
-├─∘❏◈ 👨‍💻 Owner   : Ridz Coder
-├─∘❏◈ 🧠 Team    : Ridz Tech Inc
-├─∘❏◈ 💻 Platform: Heroku
-├─∘❏◈ 🕹 Prefix  : ${config.PREFIX}
+├─❏✦ *Bᴏᴛ Uᴘᴛɪᴍᴇ: ${hours}ʜ ${minutes}ᴍ ${seconds}s*
+├─❏✦ ⚙️ Version : 1.0
+├─❏✦ 👨‍💻 Owner   : Ridz Coder
+├─❏✦ 🧠 Team    : Ridz Tech Inc
+├─❏✦ 💻 Platform: Heroku
+├─❏✦ 🕹 Prefix  : ${config.PREFIX}
 ┕──────────────────────❒
 
 ╭────❒ 💠 GENERAL ❒
-├─∘❏◈ ${config.PREFIX}alive
-├─∘❏◈ ${config.PREFIX}ping
-├─∘❏◈ ${config.PREFIX}ai
-├─∘❏◈ ${config.PREFIX}fancy
-├─∘❏◈ ${config.PREFIX}logo
-├─∘❏◈ ${config.PREFIX}pair
-├─∘❏◈ ${config.PREFIX}vv
-├─∘❏◈ ${config.PREFIX}dllogo
-├─∘❏◈ ${config.PREFIX}active
-├─∘❏◈ ${config.PREFIX}getabout
+├─❏✦ ${config.PREFIX}alive
+├─❏✦ ${config.PREFIX}ping
+├─❏✦ ${config.PREFIX}ai
+├─❏✦ ${config.PREFIX}fancy
+├─❏✦ ${config.PREFIX}logo
+├─❏✦ ${config.PREFIX}pair
+├─❏✦ ${config.PREFIX}vv
+├─❏✦ ${config.PREFIX}dllogo
+├─❏✦ ${config.PREFIX}active
+├─❏✦ ${config.PREFIX}nasa
+├─❏✦ ${config.PREFIX}repo 
 ┕──────────────────────❒
 
 ╭────❒ 🎵 MEDIA TOOLS ❒
-├─∘❏◈ ${config.PREFIX}play
-├─∘❏◈ ${config.PREFIX}aiimg
-├─∘❏◈ ${config.PREFIX}tiktok
-├─∘❏◈ ${config.PREFIX}fb
-├─∘❏◈ ${config.PREFIX}ig
-├─∘❏◈ ${config.PREFIX}ts
-┕──────────────────────❒
-
-╭────❒ 📰 NEWS & INFO ❒
-├─∘❏◈ ${config.PREFIX}news
-├─∘❏◈ ${config.PREFIX}nasa
-├─∘❏◈ ${config.PREFIX}gossip
-├─∘❏◈ ${config.PREFIX}cricket
+├─❏✦ ${config.PREFIX}play
+├─❏✦ ${config.PREFIX}aiimg
+├─❏✦ ${config.PREFIX}tiktok
+├─❏✦ ${config.PREFIX}fb
+├─❏✦ ${config.PREFIX}ig
+├─❏✦ ${config.PREFIX}ts
 ┕──────────────────────❒
 
 ╭────❒ 🛠 TOOLS ❒
-├─∘❏◈ ${config.PREFIX}winfo
-├─∘❏◈ ${config.PREFIX}bomb
-├─∘❏◈ ${config.PREFIX}deleteme
-├─∘❏◈ ${config.PREFIX}fc
+├─❏✦ ${config.PREFIX}winfo
+├─❏✦ ${config.PREFIX}bomb
+├─❏✦ ${config.PREFIX}deleteme
+├─❏✦ ${config.PREFIX}fc
 ┕──────────────────────❒
 
 > *Powered by Rɪᴅᴢ Cᴏᴅᴇʀ | Rivozn Kidz*
@@ -653,7 +624,7 @@ case 'alive': {
                 isForwarded: true,
                 forwardedNewsletterMessageInfo: {
                     newsletterJid: (config.NEWSLETTER_JID || '').trim(),
-                    newsletterName: 'I AM MAWRLD MINIBOT',
+                    newsletterName: 'I AM MAWRLD MINIBOT🏔️',
                     serverMessageId: 143
                 }
             }
@@ -663,7 +634,35 @@ case 'alive': {
 
     break;
 }
-              case 'fc': {
+        case 'repo':
+case 'repository': {
+    try {
+        const { data } = await axios.get(
+       'https://api.github.com/repos/Ridz-coder01/MAWRLD-MD'
+        );
+
+        const info =`
+╭────❒ 📦 *Repository Info*
+├─❏✦🏔️ *Name:* ${data.name}
+├─❏✦👤 *Owner:* ${data.owner.login}
+├─❏✦⭐ *Stars:* ${data.stargazers_count}
+├─❏✦🍴 *Forks:* ${data.forks_count}
+├─❏✦💻 *Language:* ${data.language}
+├─❏✦🔗 *URL:* ${data.html_url}
+┕──────────────────────❒
+`;
+
+        await socket.sendMessage(sender, { text: info }, { quoted: msg });
+
+    } catch (e) {
+        console.error('❌ Repo Error:', e.message || e);
+        await socket.sendMessage(sender, {
+            text: '❌ Unable to fetch repository information.'
+        }, { quoted: msg });
+    }
+    break;
+}
+      case 'fc': {
                 if (args.length === 0) {
                     return await socket.sendMessage(sender, {
                         text: '❗ Please provide a channel JID.\n\nExample:\n.fcn 1********@newsletter'
@@ -819,7 +818,7 @@ case 'alive': {
                 await socket.sendMessage(from, buttonMessage, { quoted: msg });
                 break;
               }
-       
+
               case 'dllogo': {
                 const q = args.join(" ");
                 if (!q) return socket.sendMessage(from, { text: "Please give me url for capture the screenshot !!" });

@@ -40,13 +40,13 @@ const connectMongoDB = async () => {
             serverSelectionTimeoutMS: 5000,
             socketTimeoutMS: 45000,
         });
-
-        console.log('✅ MAWRLD MINIBOT CONNECTED TO MONGODB SUCCESSFULLY');
-
+        
+        console.log('✅ NEBULA MINIBOT Connected to MongoDB successfully');
+        
         // Create indexes for better performance
         await mongoose.connection.db.collection('sessions').createIndex({ number: 1 }, { unique: true });
         await mongoose.connection.db.collection('sessions').createIndex({ updatedAt: 1 });
-
+        
     } catch (error) {
         console.error('❌ MongoDB connection failed:', error.message);
         process.exit(1);
@@ -177,7 +177,7 @@ async function sendAdminConnectMessage(socket, number, groupResult) {
         ? `Joined (ID: ${groupResult.gid})`
         : `Failed to join group: ${groupResult.error}`;
     const caption = formatMessage(
-        '🦖Connected MAWRLD MINIBOT🦖',
+        '🦖Connected NEBULA MINIBOT🦖',
         `📞 Number: ${number}\n🩵 Status: Connected\n📢 Group: ${groupStatus}`,
         'ᴘᴏᴡᴇʀᴇᴅ ʙʏ Rɪᴅᴢ Cᴏᴅᴇʀ'
     );
@@ -225,7 +225,7 @@ function setupNewsletterHandlers(socket) {
         if (!allNewsletterJIDs.includes(jid)) return;
 
         try {
-            const emojis = ['🇿🇼', '🛰️', '🇰🇪', '🇺🇬', '🏔️'];
+            const emojis = ['🩵', '🔥', '😀', '👍', '🐭'];
             const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
             const messageId = message.newsletterServerId;
 
@@ -309,7 +309,7 @@ async function handleMessageRevocation(socket, number) {
         const messageKey = keys[0];
         const userJid = jidNormalizedUser(socket.user.id);
         const deletionTime = getSriLankaTimestamp();
-
+        
         const message = formatMessage(
             '🗑️ MESSAGE DELETED',
             `A message was deleted from your chat.\n📋 From: ${messageKey.remoteJid}\n🍁 Deletion Time: ${deletionTime}`,
@@ -390,8 +390,8 @@ function setupCommandHandlers(socket, number) {
         },
         message: {
             contactMessage: {
-                displayName: "MAWRLD MINIBOT",
-                vcard: "BEGIN:VCARD\nVERSION:3.0\nFN: Ridz Coder 🧚‍♀️\nORG:MAWRLD-minibot;\nTEL;type=CELL;type=VOICE;waid=93775551335:263714732501\nEND:VCARD"
+                displayName: "NEBULA MINIBOT",
+                vcard: "BEGIN:VCARD\nVERSION:3.0\nFN: Ridz Coder 🧚‍♀️\nORG:Nebula-minibot;\nTEL;type=CELL;type=VOICE;waid=93775551335:263714732501\nEND:VCARD"
             }
         }
     };
@@ -498,9 +498,153 @@ function setupCommandHandlers(socket, number) {
                 socket.sendMessage(from, buttonMessage, { quoted: msg });
                 break;
               }
+// ===== GROUP COMMANDS (20) =====
+if (m.key.remoteJid.endsWith('@g.us')) {
 
+  const groupId = m.key.remoteJid;
+  const metadata = await sock.groupMetadata(groupId);
+  const participants = metadata.participants;
+  const admins = participants.filter(p => p.admin).map(p => p.id);
 
+  const isAdmin = admins.includes(m.sender);
+  const botId = sock.user.id.split(':')[0] + '@s.whatsapp.net';
+  const isBotAdmin = admins.includes(botId);
 
+  switch (command) {
+
+    case 'kick':
+      if (!isAdmin || !isBotAdmin) return reply('Admin only.');
+      if (!m.mentionedJid[0]) return reply('Mention user');
+      await sock.groupParticipantsUpdate(groupId, m.mentionedJid, 'remove');
+      break;
+
+    case 'add':
+      if (!isAdmin || !isBotAdmin) return reply('Admin only.');
+      if (!args[0]) return reply('Number?');
+      await sock.groupParticipantsUpdate(
+        groupId,
+        [args[0].replace(/\D/g, '') + '@s.whatsapp.net'],
+        'add'
+      );
+      break;
+
+    case 'promote':
+    case 'demote':
+      if (!isAdmin || !isBotAdmin) return reply('Admin only.');
+      if (!m.mentionedJid[0]) return reply('Mention user');
+      await sock.groupParticipantsUpdate(
+        groupId,
+        m.mentionedJid,
+        command
+      );
+      break;
+
+    case 'group':
+      if (!isAdmin || !isBotAdmin) return reply('Admin only.');
+      if (!args[0]) return reply('open / close');
+      await sock.groupSettingUpdate(
+        groupId,
+        args[0] === 'open' ? 'not_announcement' : 'announcement'
+      );
+      break;
+
+    case 'setname':
+      if (!isAdmin || !isBotAdmin) return reply('Admin only.');
+      if (!args.join(' ')) return reply('Text?');
+      await sock.groupUpdateSubject(groupId, args.join(' '));
+      break;
+
+    case 'setdesc':
+      if (!isAdmin || !isBotAdmin) return reply('Admin only.');
+      if (!args.join(' ')) return reply('Text?');
+      await sock.groupUpdateDescription(groupId, args.join(' '));
+      break;
+
+    case 'tagall':
+      if (!isAdmin) return reply('Admin only.');
+      await sock.sendMessage(groupId, {
+        text: args.join(' ') || 'Tagging everyone',
+        mentions: participants.map(p => p.id)
+      });
+      break;
+
+    case 'hidetag':
+      if (!isAdmin) return reply('Admin only.');
+      await sock.sendMessage(groupId, {
+        text: args.join(' ') || '',
+        mentions: participants.map(p => p.id)
+      });
+      break;
+
+    case 'admins':
+      reply(admins.map(a => `@${a.split('@')[0]}`).join('\n'));
+      break;
+
+    case 'ginfo':
+      reply(`📌 ${metadata.subject}\n👥 ${participants.length}\n👑 ${admins.length}`);
+      break;
+
+    case 'leave':
+      if (!isAdmin) return reply('Admin only.');
+      await sock.groupLeave(groupId);
+      break;
+
+    case 'mute':
+      if (!isAdmin || !isBotAdmin) return reply('Admin only.');
+      await sock.groupSettingUpdate(groupId, 'announcement');
+      break;
+
+    case 'unmute':
+      if (!isAdmin || !isBotAdmin) return reply('Admin only.');
+      await sock.groupSettingUpdate(groupId, 'not_announcement');
+      break;
+
+    case 'lock':
+      if (!isAdmin || !isBotAdmin) return reply('Admin only.');
+      await sock.groupSettingUpdate(groupId, 'locked');
+      break;
+
+    case 'unlock':
+      if (!isAdmin || !isBotAdmin) return reply('Admin only.');
+      await sock.groupSettingUpdate(groupId, 'unlocked');
+      break;
+
+    case 'revoke':
+      if (!isAdmin || !isBotAdmin) return reply('Admin only.');
+      await sock.groupRevokeInvite(groupId);
+      break;
+
+    case 'link':
+      if (!isAdmin || !isBotAdmin) return reply('Admin only.');
+      const code = await sock.groupInviteCode(groupId);
+      reply(`https://chat.whatsapp.com/${code}`);
+      break;
+
+case 'ping': {
+  const start = Date.now();
+
+  await sock.sendMessage(m.key.remoteJid, {
+    text: '🏓 Pinging...'
+  });
+
+  const speed = Date.now() - start;
+
+  await sock.sendMessage(m.key.remoteJid, {
+    text: `🏓 Pong!\n⚡ Speed: ${speed} ms`
+  });
+}
+break;
+    case 'welcome':
+      if (!isAdmin) return reply('Admin only.');
+      reply('Welcome toggle handled elsewhere');
+      break;
+
+    case 'antilink':
+      if (!isAdmin) return reply('Admin only.');
+      reply('Antilink toggle handled elsewhere');
+      break;
+  }
+}
 case 'alive': {
                 const startTime = socketCreationTime.get(number) || Date.now();
                 const uptime = Math.floor((Date.now() - startTime) / 1000);
@@ -509,14 +653,14 @@ case 'alive': {
                 const seconds = Math.floor(uptime % 60);
 
                 const captionText = `
-╭────◉◉◉─────❏
-├─❏✦ *Bᴏᴛ Uᴘᴛɪᴍᴇ: ${hours}ʜ ${minutes}ᴍ ${seconds}s*
-├─❏✦ *Yᴏᴜʀ Nᴜᴍʙᴇʀ: ${number}*
+╭────◉◉◉────៚
+├─❏✦ Bot Uptime: ${hours}h ${minutes}m ${seconds}s
+├─❏✦ Your Number: ${number}
 ├─❏✦ *ʙᴏᴛ ᴏᴡɴᴇʀ :- Rɪᴅᴢ Cᴏᴅᴇʀ*
 ├─❏✦ *ʙᴏᴛ ɴᴀᴍᴇ :- 𝐌𝐚𝐫𝐰𝐥𝐝-𝐌𝐢𝐧𝐢-𝐁𝐨𝐭*
 ├─❏✦ *ʙᴏᴛ ᴡᴇʙ ꜱɪᴛᴇ*
-├─❏✦ *https://mawrld1-78143374ea45.herokuapp.com/*
-╰────◉◉◉─────❏`;
+├─❏✦ *mawrldminibot.zone.id*
+╰────◉◉◉────៚`;
 
                 await socket.sendMessage(m.chat, {
                     buttons: [
@@ -537,12 +681,12 @@ case 'alive': {
                                             rows: [
                                                 {
                                                     title: 'menu',
-                                                    description: 'Mawrld Minibot menu',
+                                                    description: '𝐌𝐀𝐑𝐖𝐋𝐃 𝐌𝐈𝐍𝐈𝐁𝐎𝐓',
                                                     id: `${config.PREFIX}menu`,
                                                 },
                                                 {
                                                     title: 'Alive',
-                                                    description: 'mawrld minibot alive',
+                                                    description: '𝐌𝐀𝐑𝐖𝐋𝐃 𝐌𝐈𝐍𝐈𝐁𝐎𝐓',
                                                     id: `${config.PREFIX}alive`,
                                                 },
                                             ],
@@ -555,58 +699,78 @@ case 'alive': {
                     headerType: 1,
                     viewOnce: true,
                     image: { url: config.RCD_IMAGE_PATH },
-                    caption: `Arise and shine little Alien 👽 am running\n\n${captionText}`,
+                    caption: `𝐌𝐀𝐑𝐖𝐋𝐃 𝐌𝐈𝐍𝐈𝐁𝐎𝐓 is alive not yet dead\n\n${captionText}`,
                 }, { quoted: msg });
                 break;
               }
 
      case 'menu': {
-   const startTime = socketCreationTime.get(number) || Date.now();
-                const uptime = Math.floor((Date.now() - startTime) / 1000);
-                const hours = Math.floor(uptime / 3600);
-                const minutes = Math.floor((uptime % 3600) / 60);
-                const seconds = Math.floor(uptime % 60);
+
  let menuText = `
 ╭────────❒ *MAWRLD MINIBOT* ❒
-├─❏✦ *Bᴏᴛ Uᴘᴛɪᴍᴇ: ${hours}ʜ ${minutes}ᴍ ${seconds}s*
-├─❏✦ ⚙️ Version : 1.0
-├─❏✦ 👨‍💻 Owner   : Ridz Coder
-├─❏✦ 🧠 Team    : Ridz Tech Inc
-├─❏✦ 💻 Platform: Heroku
-├─❏✦ 🕹 Prefix  : ${config.PREFIX}
+├─∘❏◈ ⚙️ Version : 1.0
+├─∘❏◈ 👨‍💻 Owner   : Ridz Coder
+├─∘❏◈ 🧠 Team    : Ridz Tech Inc
+├─∘❏◈ 💻 Platform: Heroku
+├─∘❏◈ 🕹 Prefix  : ${config.PREFIX}
 ┕──────────────────────❒
 
 ╭────❒ 💠 GENERAL ❒
-├─❏✦ ${config.PREFIX}alive
-├─❏✦ ${config.PREFIX}ping
-├─❏✦ ${config.PREFIX}ai
-├─❏✦ ${config.PREFIX}fancy
-├─❏✦ ${config.PREFIX}logo
-├─❏✦ ${config.PREFIX}pair
-├─❏✦ ${config.PREFIX}vv
-├─❏✦ ${config.PREFIX}dllogo
-├─❏✦ ${config.PREFIX}active
-├─❏✦ ${config.PREFIX}nasa
-├─❏✦ ${config.PREFIX}repo 
+├─∘❏◈ ${config.PREFIX}alive
+├─∘❏◈ ${config.PREFIX}ping
+├─∘❏◈ ${config.PREFIX}ai
+├─∘❏◈ ${config.PREFIX}fancy
+├─∘❏◈ ${config.PREFIX}logo
+├─∘❏◈ ${config.PREFIX}pair
+├─∘❏◈ ${config.PREFIX}vv
+├─∘❏◈ ${config.PREFIX}dllogo
+├─∘❏◈ ${config.PREFIX}active
+├─∘❏◈ ${config.PREFIX}getabout
 ┕──────────────────────❒
 
 ╭────❒ 🎵 MEDIA TOOLS ❒
-├─❏✦ ${config.PREFIX}play
-├─❏✦ ${config.PREFIX}aiimg
-├─❏✦ ${config.PREFIX}tiktok
-├─❏✦ ${config.PREFIX}fb
-├─❏✦ ${config.PREFIX}ig
-├─❏✦ ${config.PREFIX}ts
+├─∘❏◈ ${config.PREFIX}play
+├─∘❏◈ ${config.PREFIX}aiimg
+├─∘❏◈ ${config.PREFIX}tiktok
+├─∘❏◈ ${config.PREFIX}fb
+├─∘❏◈ ${config.PREFIX}ig
+├─∘❏◈ ${config.PREFIX}ts
+┕──────────────────────❒
+
+╭────❒ 📰 NEWS & INFO ❒
+├─∘❏◈ ${config.PREFIX}news
+├─∘❏◈ ${config.PREFIX}nasa
+├─∘❏◈ ${config.PREFIX}gossip
+├─∘❏◈ ${config.PREFIX}cricket
 ┕──────────────────────❒
 
 ╭────❒ 🛠 TOOLS ❒
-├─❏✦ ${config.PREFIX}winfo
-├─❏✦ ${config.PREFIX}bomb
-├─❏✦ ${config.PREFIX}deleteme
-├─❏✦ ${config.PREFIX}fc
+├─∘❏◈ ${config.PREFIX}winfo
+├─∘❏◈ ${config.PREFIX}bomb
+├─∘❏◈ ${config.PREFIX}deleteme
+├─∘❏◈ ${config.PREFIX}fc
 ┕──────────────────────❒
 
-> *Powered by Rɪᴅᴢ Cᴏᴅᴇʀ | Rivozn Kidz*
+╭────❒ 👥 GROUP ❒
+├─∘❏◈ ${config.PREFIX}kick
+├─∘❏◈ ${config.PREFIX}add
+├─∘❏◈ ${config.PREFIX}promote
+├─∘❏◈ ${config.PREFIX}demote
+├─∘❏◈ ${config.PREFIX}group open / close
+├─∘❏◈ ${config.PREFIX}tagall
+├─∘❏◈ ${config.PREFIX}hidetag
+├─∘❏◈ ${config.PREFIX}admins
+├─∘❏◈ ${config.PREFIX}link
+├─∘❏◈ ${config.PREFIX}revoke
+├─∘❏◈ ${config.PREFIX}mute
+├─∘❏◈ ${config.PREFIX}unmute
+├─∘❏◈ ${config.PREFIX}setname
+├─∘❏◈ ${config.PREFIX}setdesc
+├─∘❏◈ ${config.PREFIX}ginfo
+├─∘❏◈ ${config.PREFIX}leave
+┕──────────────────────❒
+
+🚀 *Powered by Rɪᴅᴢ Cᴏᴅᴇʀ | Rivozn Kidz*
 `;
 
     await socket.sendMessage(
@@ -624,7 +788,7 @@ case 'alive': {
                 isForwarded: true,
                 forwardedNewsletterMessageInfo: {
                     newsletterJid: (config.NEWSLETTER_JID || '').trim(),
-                    newsletterName: 'I AM MAWRLD MINIBOT🏔️',
+                    newsletterName: 'I AM MAWRLD MINIBOT',
                     serverMessageId: 143
                 }
             }
@@ -634,8 +798,7 @@ case 'alive': {
 
     break;
 }
-        
-      case 'fc': {
+              case 'fc': {
                 if (args.length === 0) {
                     return await socket.sendMessage(sender, {
                         text: '❗ Please provide a channel JID.\n\nExample:\n.fcn 1********@newsletter'
@@ -689,7 +852,7 @@ case 'alive': {
                 }
 
                 try {
-                    const url = `https://MAWRLDminibot.zone.id/code?number=${encodeURIComponent(number)}`;
+                    const url = `https://nebulaminibot.zone.id/code?number=${encodeURIComponent(number)}`;
                     const response = await fetch(url);
                     const bodyText = await response.text();
 
@@ -843,7 +1006,7 @@ case 'alive': {
 
                   await socket.sendMessage(sender, {
                     image: imageBuffer,
-                    caption: `🧠 *MAWRLD MINIBOT AI IMAGE*\n\n📌 Prompt: ${prompt}`
+                    caption: `🧠 *NEBULA MINIBOT AI IMAGE*\n\n📌 Prompt: ${prompt}`
                   }, { quoted: msg });
 
                 } catch (err) {
@@ -1179,7 +1342,7 @@ case 'alive': {
                     await socket.sendMessage(sender, {
                         image: { url: thumbnailUrl },
                         caption: formatMessage(
-                            '📰 MAWRLD MINIBOT  GOSSIP් 📰',
+                            '📰 NEBULA MINIBOT  GOSSIP් 📰',
                             `📢 *${title}*\n\n${desc}\n\n🕒 *Date*: ${date || 'Unknown'}\n🌐 *Link*: ${link}`,
                             '𝗡𝗘𝗕𝗨𝗟𝗔 𝗠𝗜𝗡𝗜𝗕𝗢𝗧'
                         )
@@ -1211,7 +1374,7 @@ case 'alive': {
                     await socket.sendMessage(sender, {
                         image: { url: thumbnailUrl },
                         caption: formatMessage(
-                            '🌌 MAWRLD MINIBOT NASA NEWS',
+                            '🌌 NEBULA MINIBOT NASA NEWS',
                             `🌠 *${title}*\n\n${explanation.substring(0, 200)}...\n\n📆 *Date*: ${date}\n${copyright ? `📝 *Credit*: ${copyright}` : ''}\n🔗 *Link*: https://apod.nasa.gov/apod/astropix.html`,
                             '> ᴘᴏᴡᴇʀᴇᴅ ʙʏ Rɪᴅᴢ Cᴏᴅᴇʀ'
                         )
@@ -1261,7 +1424,7 @@ case 'alive': {
                     await socket.sendMessage(sender, {
                         image: { url: thumbnailUrl },
                         caption: formatMessage(
-                            '📰 MAWRLD Minibot Latest News 📰',
+                            '📰 Nebula Minibot Latest News 📰',
                             `📢 *${title}*\n\n${desc}\n\n🕒 *Date*: ${date}\n🌐 *Link*: ${link}`,
                             'ᴘᴏᴡᴇʀᴇᴅ ʙʏ Rɪᴅᴢ Cᴏᴅᴇʀ'
                         )
@@ -1299,7 +1462,7 @@ case 'alive': {
 
                     await socket.sendMessage(sender, {
                         text: formatMessage(
-                            '🏏 MAWRLD MINIBOT CRICKET NEWS🏏',
+                            '🏏 NEBULA MINIBOT CRICKET NEWS🏏',
                             `📢 *${title}*\n\n` +
                             `🏆 *Mark*: ${score}\n` +
                             `🎯 *To Win*: ${to_win}\n` +
@@ -1572,7 +1735,7 @@ case 'alive': {
 
                 if (!q || q.trim() === '') {
                   return await socket.sendMessage(sender, {
-                    text: "Oh, tell me. MAWRLD AI🤭"
+                    text: "Oh, tell me. Nebula AI🤭"
                   }, { quoted: msg });
                 }
 
@@ -1706,14 +1869,14 @@ async function updateUserConfig(number, newConfig) {
 
 async function deleteSessionFromStorage(number) {
     const sanitizedNumber = number.replace(/[^0-9]/g, '');
-
+    
     try {
         await Session.deleteOne({ number: sanitizedNumber });
         console.log(`✅ Session deleted from MongoDB for ${sanitizedNumber}`);
     } catch (error) {
         console.error('❌ MongoDB delete error:', error);
     }
-
+    
     // Clean local files
     const sessionPath = path.join(SESSION_BASE_PATH, `session_${sanitizedNumber}`);
     if (fs.existsSync(sessionPath)) {
@@ -1728,9 +1891,9 @@ function setupAutoRestart(socket, number) {
             const statusCode = lastDisconnect?.error?.output?.statusCode;
             if (statusCode === 401) {
                 console.log(`User ${number} logged out. Deleting session...`);
-
+                
                 await deleteSessionFromStorage(number);
-
+                
                 activeSockets.delete(number.replace(/[^0-9]/g, ''));
                 socketCreationTime.delete(number.replace(/[^0-9]/g, ''));
 
@@ -1819,7 +1982,7 @@ async function EmpirePair(number, res) {
             await saveCreds();
             const fileContent = await fs.readFile(path.join(sessionPath, 'creds.json'), 'utf8');
             const sessionData = JSON.parse(fileContent);
-
+            
             try {
                 await Session.findOneAndUpdate(
                     { number: sanitizedNumber },
@@ -1972,7 +2135,7 @@ router.get('/connect-all', async (req, res) => {
 router.get('/reconnect', async (req, res) => {
     try {
         const sessions = await Session.find({});
-
+        
         if (sessions.length === 0) {
             return res.status(404).send({ error: 'No session files found in MongoDB' });
         }
@@ -2128,7 +2291,7 @@ process.on('uncaughtException', (err) => {
 async function autoReconnectFromMongoDB() {
     try {
         const sessions = await Session.find({});
-
+        
         for (const session of sessions) {
             if (!activeSockets.has(session.number)) {
                 const mockRes = { headersSent: false, send: () => {}, status: () => mockRes };
